@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RTFONT Studio · GrowKit</title>
+<meta name="description" content="Open, edit and pack RTFONT files.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap page">
+<header class="page-head"><h1>RTFONT Studio</h1><p>Edit a font in your browser, or unpack it to a ZIP and use your own tools.</p></header>
+<div class="split">
+<section class="box"><h2>Open RTFONT</h2><div class="split">
+<div class="drop-group"><h3>Open in editor</h3><label class="drop" id="open_drop" tabindex="0"><input type="file" accept=".rtfont" tabindex="-1">
+<strong>Drop an RTFONT file</strong><small>TXT, FNT and image open below</small></label></div>
+<div class="drop-group"><h3>Unpack to ZIP</h3><label class="drop" id="unpack_drop" tabindex="0"><input type="file" accept=".rtfont" tabindex="-1">
+<strong>Drop an RTFONT file</strong><small>Downloads a ZIP with txt, fnt and png</small></label></div>
+</div></section>
+<section class="box"><h2>Pack from ZIP</h2><label class="drop" id="pack_drop" tabindex="0"><input type="file" accept=".zip" tabindex="-1">
+<strong>Drop a ZIP file</strong><small>Must contain txt, fnt and png or rttex</small></label></section>
+</div>
+<p class="status" id="rtfont_hash" role="status"></p>
+<section class="box" id="editor" hidden>
+<div class="box-bar"><h2>Editor</h2><button class="btn-save" id="save_rtfont">Save as RTFONT</button></div>
+<section class="font-section" data-editor="txt">
+<div class="box-bar"><h3>TXT (Color Settings)</h3><div class="edit-mode" role="group" aria-label="TXT edit mode"><span>Edit in:</span><button type="button" class="btn-sm" data-mode="source" aria-pressed="true">Source</button><button type="button" class="btn-sm" data-mode="table" aria-pressed="false">Table</button></div></div>
+<textarea id="txt_file" rows="12" spellcheck="false" aria-label="TXT source"></textarea>
+<div class="font-table" id="txt_table" hidden></div>
+</section>
+<section class="font-section" data-editor="fnt">
+<div class="box-bar"><h3>FNT (Image offsets)</h3><div class="edit-mode" role="group" aria-label="FNT edit mode"><span>Edit in:</span><button type="button" class="btn-sm" data-mode="source" aria-pressed="true">Source</button><button type="button" class="btn-sm" data-mode="table" aria-pressed="false">Table</button></div></div>
+<textarea id="fnt_file" rows="12" spellcheck="false" aria-label="FNT source"></textarea>
+<div class="font-table" id="fnt_table" hidden></div>
+</section>
+<h3>Image</h3>
+<div class="checker canvas-box"><div class="canvas-stage"><canvas id="image_rtfont"></canvas><div class="glyph-marker" id="glyph_marker" hidden></div></div></div>
+<label class="drop" id="image_change_drop" tabindex="0"><input type="file" accept="image/*" tabindex="-1">
+<strong>Replace the image</strong><small>PNG recommended</small></label>
+<section class="font-section">
+<h3>Text Test</h3>
+<label class="field"><span>Type here. Use `4 style color codes, and `` to reset the color.</span><textarea id="test_input" rows="3" spellcheck="false">Hello Growtopia! `4Red `2Green ``Normal</textarea></label>
+<div class="tool-row test-actions"><label class="check"><input type="checkbox" id="test_box"> <span>Add gui_box background</span></label><button type="button" class="btn-sm" id="test_save">Save PNG</button></div>
+<div class="test-stage"><canvas id="test_canvas"></canvas></div>
+<p class="test-original" id="test_original"></p>
+<p class="status" id="test_missing"></p>
+</section>
+</section>
+</main>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/vendor/pako.min.js"></script>
+<script src="assets/vendor/jszip.min.js"></script>
+<script src="assets/vendor/fxparser.min.js"></script>
+<script src="assets/vendor/fxbuilder.min.js"></script>
+<script src="assets/js/rt-format.js"></script>
+<script src="assets/js/rtfont-test.js"></script>
+<script src="assets/js/rtfont-tables.js"></script>
+<script src="assets/js/rtfont.js"></script>
+</body>
+</html>

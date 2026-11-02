@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rules & Gazette Editor · GrowKit</title>
+<meta name="description" content="Edit Growtopia news and rules dialog files.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap page">
+<header class="page-head"><h1>Rules &amp; Gazette Editor</h1><p>Open news.txt or rules.txt, edit the dialog and see it the way the game lays it out.</p></header>
+<section class="box dialog-editor">
+<div class="box-bar"><h2>Dialog <small id="dialog_name">untitled.txt</small></h2><div class="actions"><button type="button" id="dialog_save" class="btn-save">Download .txt</button></div></div>
+<label class="drop" id="dialog_drop" tabindex="0"><input type="file" accept=".txt" tabindex="-1"><strong>Drop news.txt or rules.txt</strong><small>Or start typing below</small></label>
+<div class="tool-row"><select id="dialog_part" aria-label="Part to insert"></select><button type="button" class="btn-sm" id="dialog_insert">Insert</button>
+<input id="item_find" type="search" list="item_names" placeholder="Find item for its ID..." aria-label="Find item"><datalist id="item_names"></datalist><button type="button" class="btn-sm" id="item_use">Insert Item ID</button></div>
+<p class="part-hint" id="part_hint"></p>
+<div class="split dialog-split">
+<label class="field"><span>Source</span><textarea id="dialog_source" rows="28" spellcheck="false"></textarea></label>
+<div class="field"><span>Preview</span><div class="game-dialog" id="dialog_preview"><canvas id="dialog_canvas" width="640" height="200"></canvas></div></div>
+</div>
+<p class="status" id="dialog_hash" role="status"></p>
+</section>
+</main>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/vendor/pako.min.js"></script>
+<script src="assets/js/rt-format.js"></script>
+<script src="assets/js/game-font.js"></script>
+<script src="assets/js/item-icons.js"></script>
+<script src="assets/js/dialog-editor.js"></script>
+</body>
+</html>

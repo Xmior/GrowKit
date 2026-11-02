@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>items.dat Editor · GrowKit</title>
+<meta name="description" content="Decode, edit and encode items.dat files.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap page">
+<header class="page-head"><h1>items.dat Editor</h1><p>Search and edit items, or export the file to JSON or TXT. Works with versions up to 27.</p></header>
+<div class="split thirds">
+<section class="box"><h2>Open in editor</h2><label class="drop" id="edit_drop" tabindex="0"><input type="file" accept=".dat" tabindex="-1">
+<strong>Drop items.dat</strong><small>The item list opens below</small></label></section>
+<section class="box"><h2>Export</h2><label class="drop" id="decode_drop" tabindex="0"><input type="file" accept=".dat" tabindex="-1">
+<strong>Drop items.dat</strong><small>Downloads JSON, or TXT if ticked below</small></label></section>
+<section class="box"><h2>Encode</h2><label class="drop" id="encode_drop" tabindex="0"><input type="file" accept=".json,.txt" tabindex="-1">
+<strong>Drop JSON or TXT</strong><small>Downloads items.dat</small></label><p class="status" id="items_dat_hash_1" role="status"></p></section>
+</div>
+<label class="check"><input type="checkbox" id="using_txt_mode"> <span>Use TXT instead of JSON</span></label>
+<section class="box" id="editor_panel" hidden>
+<div class="box-bar"><h2>Items <small id="items_summary"></small></h2><button class="btn-save" id="save_items">Download items.dat</button></div>
+<p class="status" id="items_dat_hash_2" role="status"></p>
+<input class="search" id="item_search" type="search" placeholder="Search by name or ID..." aria-label="Search items">
+<label class="check check-left"><input type="checkbox" id="show_seeds" checked> <span>Showing seeds</span></label>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th class="hide-sm">Texture</th><th class="cell-end"><span class="sr">Action</span></th></tr></thead><tbody id="items_body"></tbody></table></div>
+<div class="pager"><span id="page_info"></span><nav class="page-nav" aria-label="Pages"><button id="page_prev" class="btn-sm">Previous</button><span class="page-numbers" id="page_numbers"></span><button id="page_next" class="btn-sm">Next</button></nav><label class="page-jump" id="page_jump_wrap" hidden><span>Go to page</span><input id="page_jump" type="number" min="1"></label></div>
+</section>
+<dialog id="modal-editItems" class="modal"><form id="edit_form">
+<div class="modal-head"><div class="edit-title"><canvas class="edit-icon" id="edit_icon"></canvas><div><h2 id="edit_name">Edit item</h2><small id="edit_meta"></small></div></div><button type="button" id="close_edit">Close</button></div>
+<div class="modal-body edit-sections" id="edit_fields"></div>
+<div class="modal-foot"><button type="button" class="btn-save" id="editItemsButton">Apply changes</button></div>
+</form></dialog>
+</main>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/js/items-codec.js"></script>
+<script src="assets/js/item-icons.js"></script>
+<script src="assets/js/item-form.js"></script>
+<script src="assets/js/items.js"></script>
+</body>
+</html>

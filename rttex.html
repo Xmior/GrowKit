@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RTTEX Converter · GrowKit</title>
+<meta name="description" content="Convert RTTEX files to PNG and images to RTTEX.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap page">
+<header class="page-head"><h1>RTTEX Converter</h1><p>View textures at full size and download them as PNG, or turn your images into RTTEX.</p></header>
+<div class="split">
+<section class="box"><h2>RTTEX to PNG</h2><label class="drop" id="rttex_drop" tabindex="0"><input type="file" accept=".rttex" multiple tabindex="-1">
+<strong>Drop RTTEX files here</strong><small>or click to choose, multiple files allowed</small></label></section>
+<section class="box"><h2>Image to RTTEX</h2><label class="drop" id="image_drop" tabindex="0"><input type="file" accept="image/*" multiple tabindex="-1">
+<strong>Drop images here</strong><small>PNG recommended, the RTTEX downloads automatically</small></label><ul class="file-list" id="encoded_list"></ul></section>
+</div>
+<section class="box">
+<div class="box-bar"><h2>Textures <small id="result_count"></small></h2><div class="actions"><button id="clear_results" disabled>Clear</button><button id="select_mode" disabled>Select</button><button id="remove_selected" hidden disabled>Remove Selections</button><button class="btn-save" id="download_zip" hidden disabled>Download Selected</button></div></div>
+<label class="tex-size"><img src="assets/img/zoom.png" alt="" class="tex-size-icon"><input id="tex_size" aria-label="Preview size" type="range" min="10" max="100" step="5" value="40"><output id="tex_size_value">40%</output></label>
+<p class="empty" id="empty">No textures yet. Click any texture to download it.</p>
+<div class="tex-list" id="results"></div>
+</section>
+</main>
+<aside class="promo-toast" id="promo_toast" aria-label="RTTEX Quick Look" hidden>
+<a class="promo-link" href="https://github.com/Xmior/RTTEX-QuickLook" target="_blank" rel="noopener"><img src="assets/img/rttex_quicklook.png" alt="" width="48" height="48"><span><strong>On a Mac?</strong><small>Opening RTTEX files just got easier with RTTEX Quick Look.</small></span></a>
+<button type="button" class="promo-close" id="promo_close" aria-label="Close"><img src="assets/interface/cross.png" alt=""></button>
+</aside>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/vendor/pako.min.js"></script>
+<script src="assets/vendor/jszip.min.js"></script>
+<script src="assets/js/rt-format.js"></script>
+<script src="assets/js/rttex.js"></script>
+</body>
+</html>
