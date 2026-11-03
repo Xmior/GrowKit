@@ -26,23 +26,24 @@ const GameFont = {
       pos += 8;
     }
     const atlas = RT.textureToCanvas(RT.decodeTexture(RT.unpack(bytes.subarray(pos))));
+    // One small canvas per glyph and colour; a full atlas copy per colour runs the browser out of memory
     const tints = new Map();
-    const tinted = (color) => {
-      if (!color) return atlas;
-      if (!tints.has(color)) {
+    const tinted = (g, code, color) => {
+      const key = `${color}:${code}`;
+      if (!tints.has(key)) {
         const layer = document.createElement("canvas");
-        layer.width = atlas.width;
-        layer.height = atlas.height;
-        const g = layer.getContext("2d");
-        g.drawImage(atlas, 0, 0);
-        g.globalCompositeOperation = "multiply";
-        g.fillStyle = color;
-        g.fillRect(0, 0, layer.width, layer.height);
-        g.globalCompositeOperation = "destination-in";
-        g.drawImage(atlas, 0, 0);
-        tints.set(color, layer);
+        layer.width = g.w;
+        layer.height = g.h;
+        const c = layer.getContext("2d");
+        c.drawImage(atlas, g.x, g.y, g.w, g.h, 0, 0, g.w, g.h);
+        c.globalCompositeOperation = "multiply";
+        c.fillStyle = color;
+        c.fillRect(0, 0, g.w, g.h);
+        c.globalCompositeOperation = "destination-in";
+        c.drawImage(atlas, g.x, g.y, g.w, g.h, 0, 0, g.w, g.h);
+        tints.set(key, layer);
       }
-      return tints.get(color);
+      return tints.get(key);
     };
     const advance = (code) => (code === 32 ? blank : glyphs.get(code)?.adv ?? 0);
 
@@ -95,7 +96,10 @@ const GameFont = {
         for (const { code, color } of line.chars) {
           const g = glyphs.get(code);
           if (g && code !== 32 && g.w && g.h) {
-            ctx.drawImage(tinted(color), g.x, g.y, g.w, g.h, x + (at + g.ox) * scale, y + g.oy * scale, g.w * scale, g.h * scale);
+            const dx = x + (at + g.ox) * scale;
+            const dy = y + g.oy * scale;
+            if (color) ctx.drawImage(tinted(g, code, color), dx, dy, g.w * scale, g.h * scale);
+            else ctx.drawImage(atlas, g.x, g.y, g.w, g.h, dx, dy, g.w * scale, g.h * scale);
           }
           at += advance(code);
         }

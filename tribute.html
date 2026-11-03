@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player Tribute · GrowKit</title>
+<meta name="description" content="Extra Growtopia file tools.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap page">
+<header class="page-head"><h1>Player Tribute</h1><p>Read, edit and convert player_tribute.dat</p><p><a href="extras.html">Back to Extras</a></p></header>
+<section class="box tool-page">
+<label class="drop" id="tribute_drop" tabindex="0"><input type="file" accept=".dat,.json" tabindex="-1">
+<strong>Drop player_tribute.dat or JSON</strong><small>The four tribute lists open below</small></label>
+<div id="tribute_panel" class="tribute-panel" hidden>
+<div class="box-bar"><h3>Tribute Lists</h3><div class="actions"><button id="export_tribute">Export as JSON</button><button class="btn-save" id="save_tribute">Download .dat</button></div></div>
+<p class="status" id="tribute_hash" role="status"></p>
+<div class="tribute-sections" id="tribute_editor"></div>
+</div>
+</section>
+</main>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/js/game-text.js"></script>
+<script src="assets/js/tribute.js"></script>
+</body>
+</html>

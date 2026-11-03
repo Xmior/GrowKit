@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auction House · GrowKit</title>
+<meta name="description" content="Extra Growtopia file tools.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap page">
+<header class="page-head"><h1>Auction House</h1><p>Live auctions, with item icons from the latest items.dat</p><p><a href="extras.html">Back to Extras</a></p></header>
+<section class="box tool-page">
+<div class="box-bar"><p class="status-text" id="auction_status" role="status"></p><button type="button" class="btn-sm" id="auction_refresh">Refresh</button></div>
+<div class="tool-row"><input class="search" id="auction_search" type="search" placeholder="Search by item, owner or world..." aria-label="Search auctions">
+<select id="auction_sort" aria-label="Sort auctions"><option value="time-asc">Time Remaining: Low to High</option><option value="time-desc">Time Remaining: High to Low</option><option value="bid-desc">Highest Bid: High to Low</option><option value="bid-asc">Highest Bid: Low to High</option></select></div>
+<ul class="auction-list" id="auction_list"></ul>
+<button type="button" id="auction_more" hidden>Load More</button>
+</section>
+</main>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/js/item-icons.js"></script>
+<script src="assets/js/live-pages.js"></script>
+</body>
+</html>

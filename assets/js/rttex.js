@@ -25,13 +25,41 @@ function refreshToolbar() {
   document.getElementById("result_count").textContent = has ? `(${results.length})` : "";
 }
 
+// Advanced options work on the file's raw pixels, as transparent pixels can still hold colour
+function paintTexture(canvas, texture) {
+  const option = (id) => document.getElementById(id).checked;
+  const reveal = option("adv_reveal");
+  const hiddenOnly = option("adv_hidden");
+  const zeroOnly = option("adv_zero");
+  const noWhite = option("adv_white");
+  const noBlack = option("adv_black");
+  let pixels = texture.rgba;
+  if (reveal || hiddenOnly) {
+    pixels = new Uint8ClampedArray(texture.rgba);
+    for (let i = 0; i < pixels.length; i += 4) {
+      const alpha = pixels[i + 3];
+      const white = pixels[i] === 255 && pixels[i + 1] === 255 && pixels[i + 2] === 255;
+      const black = pixels[i] === 0 && pixels[i + 1] === 0 && pixels[i + 2] === 0;
+      const eligible = (alpha === 0 || !zeroOnly) && !(noWhite && white) && !(noBlack && black);
+      if (hiddenOnly && alpha !== 0) pixels[i + 3] = 0;
+      else if (eligible) pixels[i + 3] = 255;
+    }
+  }
+  const full = document.createElement("canvas");
+  full.width = texture.width;
+  full.height = texture.height;
+  full.getContext("2d").putImageData(new ImageData(pixels, texture.width, texture.height), 0, 0);
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(full, 0, 0);
+}
+
 function addResult(file, texture) {
   // Textures are padded to a power of two in the file; only the real image is kept
-  const full = RT.textureToCanvas(texture);
   const canvas = document.createElement("canvas");
   canvas.width = texture.originalWidth || texture.width;
   canvas.height = texture.originalHeight || texture.height;
-  canvas.getContext("2d").drawImage(full, 0, 0);
+  paintTexture(canvas, texture);
   canvas.style.width = `calc(${canvas.width}px * var(--tex-scale))`;
   const name = GK.baseName(file.name) + ".png";
   const card = document.createElement("article");
@@ -48,7 +76,7 @@ function addResult(file, texture) {
   const meta = document.createElement("p");
   meta.textContent = `${canvas.width}×${canvas.height} · ${texture.hasAlpha ? "RGBA" : "RGB"} · ${GK.formatSize(file.size)}`;
   card.append(stage, title, meta);
-  const result = { name, canvas, card, selected: false };
+  const result = { name, canvas, card, texture, selected: false };
   const save = async () => {
     if (selecting) {
       result.selected = !result.selected;
@@ -165,3 +193,7 @@ function applyTextureSize() {
 }
 sizeSlider.addEventListener("input", applyTextureSize);
 applyTextureSize();
+
+for (const id of ["adv_reveal", "adv_hidden", "adv_zero", "adv_white", "adv_black"]) {
+  document.getElementById(id).addEventListener("change", () => results.forEach((r) => paintTexture(r.canvas, r.texture)));
+}

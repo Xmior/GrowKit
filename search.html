@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Item Search · GrowKit</title>
+<meta name="description" content="Extra Growtopia file tools.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap wrap-wide page">
+<header class="page-head"><h1>Item Search</h1><p id="search_info">Loading items...</p></header>
+<section class="box">
+<div class="tool-row search-tools"><input class="search" id="item_search" type="search" placeholder="Search by name or ID..." aria-label="Search items">
+<label class="check"><input type="checkbox" id="show_seeds"> <span>Showing seeds</span></label>
+<div class="edit-mode" role="group" aria-label="View"><button type="button" class="btn-sm" id="view_grid" aria-pressed="true">Grid</button><button type="button" class="btn-sm" id="view_list" aria-pressed="false">List</button></div></div>
+<div id="item_results" class="item-grid"></div>
+<div class="pager"><span id="page_info"></span><nav class="page-nav" aria-label="Pages"><button id="page_prev" class="btn-sm">Previous</button><span class="page-numbers" id="page_numbers"></span><button id="page_next" class="btn-sm">Next</button></nav><label class="page-jump" id="page_jump_wrap" hidden><span>Go to page</span><input id="page_jump" type="number" min="1"></label></div>
+</section>
+<input type="checkbox" id="using_txt_mode" hidden>
+<dialog id="item_modal" class="item-modal" aria-labelledby="about_title"><div class="item-about">
+<header class="about-head"><canvas id="about_icon" class="about-icon"></canvas><h2 id="about_title"></h2><canvas id="about_element" class="about-element-icon" hidden></canvas></header>
+<p id="about_text" class="about-text"></p>
+<p id="about_rarity" class="about-text"></p>
+<div id="about_props" class="about-props"></div>
+<div class="about-actions"><button type="button" class="game-btn" id="about_ok">OK</button><button type="button" class="game-btn" id="about_sprites" aria-expanded="false">Download Sprites</button></div>
+<section id="sprite_panel" class="sprite-panel" hidden>
+<div class="tool-row"><label for="sprite_scale">Size</label><select id="sprite_scale"></select><button type="button" class="game-btn" id="sprite_all">Select all</button><button type="button" class="game-btn" id="sprite_zip" disabled>Download selected</button></div>
+<div id="sprite_picker_wrap" class="sprite-picker"><p>Part of the texture sheet. Click a cell to add or remove a frame.</p><canvas id="sprite_picker"></canvas></div>
+<div class="sprite-table"><table><thead><tr><th scope="col">Pick</th><th scope="col">Sprite</th><th scope="col">Part</th><th scope="col">Size</th><th scope="col">Save</th></tr></thead><tbody id="sprite_rows"></tbody></table></div>
+</section></div></dialog>
+</main>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/vendor/pako.min.js"></script>
+<script src="assets/js/rt-format.js"></script>
+<script src="assets/vendor/jszip.min.js"></script>
+<script src="assets/js/action-types.js"></script>
+<script src="assets/js/item-icons.js"></script>
+<script src="assets/js/items-codec.js"></script>
+<script src="assets/js/item-search.js"></script>
+</body>
+</html>

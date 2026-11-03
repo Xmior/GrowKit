@@ -7,7 +7,6 @@ const FontTest = (() => {
   const image = document.getElementById("image_rtfont");
   const txtSource = document.getElementById("txt_file");
   const fntSource = document.getElementById("fnt_file");
-  const scratch = document.createElement("canvas");
   const boxToggle = document.getElementById("test_box");
   const boxImage = new Image();
   boxImage.src = "assets/img/gui_box.png";
@@ -25,7 +24,18 @@ const FontTest = (() => {
     }
   }
 
+  // Parsing the FNT is slow, so it only runs again when the sources change
+  let parsed = null;
+  let parsedFrom = "";
   function readFont() {
+    const from = fntSource.value + "\0" + txtSource.value;
+    if (parsed && parsedFrom === from) return parsed;
+    parsed = parseFont();
+    parsedFrom = from;
+    return parsed;
+  }
+
+  function parseFont() {
     const font = new XMLParser(RT.XML_OPTIONS).parse(fntSource.value).font;
     const list = font.chars.char === undefined ? [] : [].concat(font.chars.char);
     const chars = new Map(list.map((c) => [Number(c["@_id"]), c]));
@@ -79,6 +89,8 @@ const FontTest = (() => {
     return { glyphs, absent, width, height: y + font.lineHeight };
   }
 
+  // Tinted glyphs are kept between draws and dropped when the font image changes
+  let tintCache = new Map();
   function drawGlyph(ctx, { glyph, x, y, color }) {
     const w = Number(glyph["@_width"]);
     const h = Number(glyph["@_height"]);
@@ -89,16 +101,22 @@ const FontTest = (() => {
       ctx.drawImage(image, sx, sy, w, h, x, y, w, h);
       return;
     }
-    scratch.width = w;
-    scratch.height = h;
-    const tint = scratch.getContext("2d");
-    tint.drawImage(image, sx, sy, w, h, 0, 0, w, h);
-    tint.globalCompositeOperation = "multiply";
-    tint.fillStyle = color;
-    tint.fillRect(0, 0, w, h);
-    tint.globalCompositeOperation = "destination-in";
-    tint.drawImage(image, sx, sy, w, h, 0, 0, w, h);
-    ctx.drawImage(scratch, x, y);
+    const key = `${color}:${sx}:${sy}:${w}:${h}`;
+    let layer = tintCache.get(key);
+    if (!layer) {
+      layer = document.createElement("canvas");
+      layer.width = w;
+      layer.height = h;
+      const tint = layer.getContext("2d");
+      tint.drawImage(image, sx, sy, w, h, 0, 0, w, h);
+      tint.globalCompositeOperation = "multiply";
+      tint.fillStyle = color;
+      tint.fillRect(0, 0, w, h);
+      tint.globalCompositeOperation = "destination-in";
+      tint.drawImage(image, sx, sy, w, h, 0, 0, w, h);
+      tintCache.set(key, layer);
+    }
+    ctx.drawImage(layer, x, y);
   }
 
   function draw() {
@@ -134,5 +152,5 @@ const FontTest = (() => {
   document.getElementById("test_save").addEventListener("click", () => {
     output.toBlob((blob) => GK.download(blob, "text_test.png"), "image/png");
   });
-  return { render };
+  return { render, reset() { tintCache = new Map(); parsed = null; render(); } };
 })();

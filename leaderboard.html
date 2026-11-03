@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dungeons Leaderboard · GrowKit</title>
+<meta name="description" content="Extra Growtopia file tools.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap page">
+<header class="page-head"><h1>Dungeons Leaderboard</h1><p>Top scorers and every league</p><p><a href="extras.html">Back to Extras</a></p></header>
+<section class="box tool-page">
+<div class="box-bar"><p class="status-text" id="leaderboard_status" role="status"></p><button type="button" class="btn-sm" id="leaderboard_refresh">Refresh</button></div>
+<div id="leaderboard_panel" class="leaderboard" hidden>
+<div class="leaderboard-tabs" id="leaderboard_tabs"></div>
+<h3 id="leaderboard_title"></h3>
+<div class="table-wrap"><table><thead><tr><th>Rank</th><th>Player</th><th class="hide-sm">League</th><th class="cell-end">Score</th></tr></thead><tbody id="leaderboard_rows"></tbody></table></div>
+</div>
+</section>
+</main>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/js/live-pages.js"></script>
+</body>
+</html>

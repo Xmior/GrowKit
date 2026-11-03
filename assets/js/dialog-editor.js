@@ -107,6 +107,7 @@ function nineSlice(ctx, image, x, y, w, h) {
   const END = 22;
   const tail = image.width - END;
   const slices = (at, size) => [[0, START, at, START], [START, END - START, at + START, Math.max(0, size - START - tail)], [END, tail, at + size - tail, tail]];
+  ctx.imageSmoothingEnabled = false; // the font turns smoothing on, which bleeds the border into the stretched centre
   for (const [sy, sh, dy, dh] of slices(y, h)) {
     for (const [sx, sw, dx, dw] of slices(x, w)) ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
   }

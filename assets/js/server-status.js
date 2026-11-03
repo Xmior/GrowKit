@@ -4,7 +4,8 @@ const REFRESH_MS = 60000;
 
 async function refreshServerStatus() {
   try {
-    const response = await fetch("api/online.php", { cache: "no-store" });
+    let response = await fetch("data/live/online.json", { cache: "no-store" });
+    if (!response.ok) response = await fetch("api/online.php", { cache: "no-store" });
     if (!response.ok) throw new Error();
     const online = Number((await response.json()).online_user);
     if (!Number.isFinite(online)) throw new Error();

@@ -4,7 +4,7 @@ const GK = {
     { href: "rttex.html", label: "RTTEX" },
     { href: "rtfont.html", label: "RTFONT" },
     { href: "items.html", label: "items.dat" },
-    { href: "gazette.html", label: "Rules & Gazette" },
+    { href: "search.html", label: "Item Search" },
     { href: "extras.html", label: "Extras" },
   ],
 

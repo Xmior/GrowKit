@@ -10,66 +10,17 @@
 </head>
 <body>
 <main id="main" class="wrap page">
-<header class="page-head"><h1>Extras</h1><p>Smaller tools and live Growtopia lists. Click a box to open it.</p></header>
-<details class="box fold" id="auction_box">
-<summary><span class="fold-title"><h2>Auction House</h2><small>Live auctions, with item icons from the latest items.dat</small></span><span class="fold-arrow" aria-hidden="true"></span></summary>
-<div class="fold-body">
-<div class="box-bar"><p class="status-text" id="auction_status" role="status"></p><button type="button" class="btn-sm" id="auction_refresh">Refresh</button></div>
-<div class="tool-row"><input class="search" id="auction_search" type="search" placeholder="Search by item, owner or world..." aria-label="Search auctions">
-<select id="auction_sort" aria-label="Sort auctions"><option value="time-asc">Time Remaining: Low to High</option><option value="time-desc">Time Remaining: High to Low</option><option value="bid-desc">Highest Bid: High to Low</option><option value="bid-asc">Highest Bid: Low to High</option></select></div>
-<ul class="auction-list" id="auction_list"></ul>
-<button type="button" id="auction_more" hidden>Load More</button>
-</div>
-</details>
-<details class="box fold" id="leaderboard_box">
-<summary><span class="fold-title"><h2>Dungeons Leaderboard</h2><small>Top scorers and every league</small></span><span class="fold-arrow" aria-hidden="true"></span></summary>
-<div class="fold-body">
-<div class="box-bar"><p class="status-text" id="leaderboard_status" role="status"></p><button type="button" class="btn-sm" id="leaderboard_refresh">Refresh</button></div>
-<div id="leaderboard_panel" class="leaderboard" hidden>
-<div class="leaderboard-tabs" id="leaderboard_tabs"></div>
-<h3 id="leaderboard_title"></h3>
-<div class="table-wrap"><table><thead><tr><th>Rank</th><th>Player</th><th class="hide-sm">League</th><th class="cell-end">Score</th></tr></thead><tbody id="leaderboard_rows"></tbody></table></div>
-</div>
-</div>
-</details>
-<details class="box fold" id="weather_box">
-<summary><span class="fold-title"><h2>Weather Viewer <span class="wip-badge">Work in Progress</span></h2><small>Play the game's weather backgrounds</small></span><span class="fold-arrow" aria-hidden="true"></span></summary>
-<div class="fold-body">
-<div class="tool-row"><select id="weather_select" aria-label="Weather"></select><label class="weather-camera"><span>Camera</span><input id="weather_camera" type="range" min="0" max="4000" value="0"></label><button type="button" id="weather_png" class="btn-sm">Save PNG</button></div>
-<canvas id="weather_canvas" class="weather-canvas" width="960" height="540"></canvas>
-<p class="status-text" id="weather_status" role="status"></p>
-</div>
-</details>
-<details class="box fold" id="tribute_box">
-<summary><span class="fold-title"><h2>Player Tribute</h2><small>Read, edit and convert player_tribute.dat</small></span><span class="fold-arrow" aria-hidden="true"></span></summary>
-<div class="fold-body">
-<label class="drop" id="tribute_drop" tabindex="0"><input type="file" accept=".dat,.json" tabindex="-1">
-<strong>Drop player_tribute.dat or JSON</strong><small>The four tribute lists open below</small></label>
-<div id="tribute_panel" class="tribute-panel" hidden>
-<div class="box-bar"><h3>Tribute Lists</h3><div class="actions"><button id="export_tribute">Export as JSON</button><button class="btn-save" id="save_tribute">Download .dat</button></div></div>
-<p class="status" id="tribute_hash" role="status"></p>
-<div class="tribute-sections" id="tribute_editor"></div>
-</div>
-</div>
-</details>
-<details class="box fold" id="hash_box">
-<summary><span class="fold-title"><h2>Proton Hash</h2><small>Get the Proton hash of any file</small></span><span class="fold-arrow" aria-hidden="true"></span></summary>
-<div class="fold-body">
-<label class="drop" id="hash_drop" tabindex="0"><input type="file" accept="" multiple tabindex="-1">
-<strong>Drop files here</strong><small>Any file type, multiple files allowed</small></label>
-<div id="hash_panel" class="tribute-panel" hidden><h3>Results</h3>
-<div class="table-wrap"><table><thead><tr><th>File</th><th class="hide-sm">Size</th><th>Hash</th><th class="hide-sm">Hex</th><th class="cell-end"><span class="sr">Action</span></th></tr></thead><tbody id="hash_rows"></tbody></table></div>
-</div>
-</div>
-</details>
+<header class="page-head"><h1>Extras</h1><p>Smaller tools and live Growtopia lists.</p></header>
+<section aria-label="Extras" class="tool-grid">
+<a class="box tool-card" href="recipe.html"><h2>Recipe Tree</h2><p>See how any item is spliced, down to its base seeds</p></a>
+<a class="box tool-card" href="auction.html"><h2>Auction House</h2><p>Live auctions with item icons</p></a>
+<a class="box tool-card" href="leaderboard.html"><h2>Dungeons Leaderboard</h2><p>Top scorers and every league</p></a>
+<a class="box tool-card" href="gazette.html"><h2>Rules &amp; Gazette Editor</h2><p>Edit news.txt and rules.txt with a game-style preview</p></a>
+<a class="box tool-card" href="tribute.html"><h2>Player Tribute</h2><p>Read, edit and convert player_tribute.dat</p></a>
+<a class="box tool-card" href="hash.html"><h2>Proton Hash</h2><p>Get the Proton hash of any file</p></a>
+</section>
 </main>
 <script src="assets/js/common.js"></script>
 <script src="assets/js/clouds.js"></script>
-<script src="assets/js/item-icons.js"></script>
-<script src="assets/js/live-pages.js"></script>
-<script src="assets/js/weather.js"></script>
-<script src="assets/js/game-text.js"></script>
-<script src="assets/js/tribute.js"></script>
-<script src="assets/js/hash.js"></script>
 </body>
 </html>

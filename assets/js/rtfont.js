@@ -15,6 +15,7 @@ function drawToEditor(source) {
   imageCanvas.height = source.height;
   imageCanvas.getContext("2d").drawImage(source, 0, 0);
   FontTables.drawPreviews();
+  FontTest.reset();
 }
 
 function saveFont(bytes, name) {

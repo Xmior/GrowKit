@@ -12,7 +12,7 @@
   --bar: #2fbfdf;
   --link: #ffff66;
   --link-hover: #ffcc00;
-  --shadow-text: 2px 2px 0 #000;
+  --shadow-text: 2px 1px 0 #000000ad;
   color-scheme: light;
 }
 body.dark-mode {
@@ -77,7 +77,7 @@ body.dark-mode .info-bar { border-color: #4babff; }
 /* Game dialog frame, drawn in CSS so it scales with the content */
 .box {
   display: grid; gap: 12px; align-content: start; min-width: 0; padding: 18px;
-  background: var(--box); border: 2px solid #000; border-radius: 5px; box-shadow: 0 0 0 3px var(--box-rim);
+  background: var(--box); border: 2px solid #165586; border-radius: 5px; box-shadow: 0 0 0 3px var(--box-rim);
 }
 .box h2 { font-size: 1.3rem; line-height: 1.2; }
 .box h2 small { font-size: 1rem; }
@@ -125,11 +125,11 @@ body.dark-mode .checker { background-image: repeating-conic-gradient(#333 0 25%,
 .tex-list:empty { display: none; }
 .tex-card {
   display: grid; gap: 4px; max-width: 100%; padding: 12px; cursor: pointer; background: #222; border-radius: 15px;
-  box-shadow: 0 0 0 2px #000; transition: box-shadow .15s;
+  box-shadow: 0 0 0 2px #a5e6ff; transition: box-shadow .15s;
 }
 .tex-card:hover, .tex-card:focus-visible { box-shadow: 0 0 0 3px var(--link); outline: 0; }
-.tex-card h3 { margin-top: 6px; font-size: 1rem; overflow-wrap: anywhere; }
-.tex-card p { font-size: .82rem; }
+.tex-card h3 { margin-top: 6px; font-size: 9px; text-shadow: 1px 1px #000000ad; overflow-wrap: anywhere; }
+.tex-card p { font-size: 2px; text-shadow: 1px 1px #000000ad;; }
 .tex-stage { max-width: 100%; overflow-x: auto; }
 .tex-stage canvas { display: block; image-rendering: pixelated; }
 .canvas-box { max-height: 460px; overflow: auto; }
@@ -195,6 +195,7 @@ body.dark-mode .modal { background: #0e1642; }
 .is-selecting .tex-card.is-selected h3::before { background-image: url("../img/checkedbox.png"); }
 .btn-zip { display: inline-flex; align-items: center; gap: 8px; }
 .btn-zip::before { content: ""; width: 24px; height: 24px; background: url("../img/zipicon.png") center / contain no-repeat; }
+
 
 /* RTFONT editor */
 .drop-group { display: grid; gap: 8px; align-content: start; min-width: 0; }
@@ -376,3 +377,101 @@ input.color-bar { width: 100%; height: 42px; min-height: 42px; padding: 3px; cur
 /* Texture cards follow the theme: light by default, dark in dark mode */
 .tex-card { background: #a9d3e4; }
 body.dark-mode .tex-card { background: #222; }
+
+/* Wide pages use large monitors */
+.wrap-wide { width: min(1800px, 100% - 32px); }
+
+/* RTTEX advanced */
+.advanced-box summary { cursor: pointer; font-size: 1rem; }
+.advanced-options { display: flex; flex-wrap: wrap; gap: 0 22px; padding-top: 4px; }
+
+/* Dark mode form controls */
+body.dark-mode input:not([type=file], [type=checkbox], [type=range], [type=color]), body.dark-mode textarea, body.dark-mode select {
+  color: #e8efff; background: #0a1030; border-color: #33436f; box-shadow: 2px 2px 2px rgb(0 0 0 / .6);
+}
+body.dark-mode ::placeholder { color: #93a2c7; }
+
+/* Promo dark mode */
+body.dark-mode .promo-toast { background: #101a4a padding-box; }
+
+/* Extras tool pages */
+.tool-page { gap: 12px; }
+
+/* Item Search */
+.search-tools { align-items: center; }
+.search-tools .search { flex: 1 1 260px; width: auto; }
+.item-grid { display: grid; grid-template-columns: repeat(auto-fill, 60px); justify-content: center; gap: 6px; }
+.item-tile { display: grid; place-items: center; min-height: 60px; padding: 4px; background: var(--well); border: 2px solid #000; border-radius: 5px; box-shadow: none; }
+.item-tile:hover:not(:disabled), .item-row:hover:not(:disabled) { background: rgb(255 255 102 / .2); }
+/* gui_itembox cells stretch like gui_box: 6px frame on each side, hard pixels */
+.item-row.item-box { background: none; border-radius: 0; border-style: solid; border-width: 6px; border-image: var(--box) 6 fill / 6px stretch; image-rendering: pixelated; }
+.item-row.item-box:hover:not(:disabled) { background: none; filter: brightness(1.2); }
+/* Cells are 40px with 32px empty inside; shown at 1.5x */
+.item-tile.item-box { position: relative; width: 60px; height: 60px; min-height: 0; padding: 0; background: var(--box) center / 60px 60px no-repeat; border: 0; border-radius: 0; image-rendering: pixelated; }
+.item-tile.item-box:hover:not(:disabled) { background: var(--box) center / 60px 60px no-repeat; filter: brightness(1.2); }
+.item-icon.item-icon-fill { width: 48px; height: 48px; }
+/* inv_select's frame is 43px in a 64px texture, centred on the 40px cell */
+.item-tile.item-box:focus-visible { outline: 0; }
+.item-tile.is-selected::after, .item-tile:focus-visible::after { content: ""; position: absolute; top: -2.25px; left: -2.25px; z-index: 1; width: 96px; height: 96px; background: url("../game/inv_select.png") 0 0 / 96px 96px no-repeat; image-rendering: pixelated; pointer-events: none; }
+.item-tip { position: fixed; z-index: 40; max-width: min(420px, 100vw - 16px); padding: 6px 14px; color: #fff; font: 700 1.1rem/1.2 var(--font); background: rgb(10 20 30 / .82); border-bottom: 3px solid #000; pointer-events: none; }
+.item-tip-rarity { color: #ffe2b0; }
+.item-box-0 { --box: var(--item-box-0); }
+.item-box-1 { --box: var(--item-box-1); }
+.item-box-3 { --box: var(--item-box-3); }
+.item-box-5 { --box: var(--item-box-5); }
+.item-box-6 { --box: var(--item-box-6); }
+.item-box-7 { --box: var(--item-box-7); }
+.item-box-8 { --box: var(--item-box-8); }
+.item-box-9 { --box: var(--item-box-9); }
+.item-list { display: grid; gap: 4px; }
+.item-row { display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 4px 12px; text-align: left; background: var(--well); border: 2px solid #000; border-radius: 5px; box-shadow: none; }
+.item-row-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.item-modal { width: min(640px, 100% - 24px); max-height: 92dvh; padding: 0; overflow: auto; background: transparent; border: 0; }
+.item-modal::backdrop { background: rgb(0 0 0 / .45); }
+/* gui_box at exactly 2x with hard pixels: 7px frame, 13px centre, 10px right and bottom edge */
+.item-about {
+  position: relative; isolation: isolate; padding: 8px 10px 10px 8px; color: #fff; font-family: var(--font); image-rendering: pixelated;
+  border-style: solid; border-width: 18px 20px 20px 18px; border-image: url("../img/gui_box.png") 9 10 10 9 fill / 18px 20px 20px 18px stretch;
+}
+.item-about::before { content: ""; position: absolute; inset: -4px -0px -0px -4px; z-index: -1; background: rgb(20 80 115 / .88); }
+.about-head { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+.about-icon { flex: none; width: 102px; height: 102px; image-rendering: pixelated; }
+.about-head h2 { margin: 0; color: #fff; font-size: 1.6rem; line-height: 1.15; overflow-wrap: anywhere; }
+.item-row-fact { flex: none; width: 120px; font-size: .85rem; font-weight: 400; text-shadow: none; overflow-wrap: anywhere; }
+@media (max-width: 760px) { .item-row-fact, .item-row-fact.about-element { display: none; } }
+.about-element { display: flex; align-items: center; gap: 6px; }
+.about-element canvas { width: 24px; height: 24px; image-rendering: pixelated; }
+.about-head h2 { flex: 1; min-width: 0; }
+.about-element-icon { flex: none; align-self: flex-start; width: 40px; height: 40px; image-rendering: pixelated; }
+.about-element-icon[hidden] { display: none; }
+.about-white { color: #fff; }
+.about-text { margin: 0 0 14px; color: #ffe2b0; white-space: pre-line; }
+.about-props p { margin: 0 0 2px; color: #b5ecfb; }
+.about-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.game-btn {
+  min-height: 40px; padding: 0 8px; color: #fff; background: none; border-radius: 0; box-shadow: none; image-rendering: pixelated;
+  border-style: solid; border-width: 9px 10px 10px 9px; border-image: var(--game-button) 9 10 10 9 fill / 9px 10px 10px 9px stretch;
+}
+.game-btn:hover:not(:disabled) { background: none; filter: brightness(1.12); }
+.sprite-panel { margin-top: 16px; }
+.sprite-panel .tool-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
+.sprite-table { max-height: 300px; overflow: auto; }
+.sprite-table table { width: 100%; border-collapse: collapse; }
+.sprite-table th, .sprite-table td { padding: 4px 8px; color: #fff; text-align: left; background: rgb(0 0 0 / .18); border-bottom: 1px solid rgb(255 255 255 / .18); }
+.sprite-table thead th { position: sticky; top: 0; z-index: 1; background: #1c5674; }
+.sprite-picker p { margin: 0 0 6px; font-size: .85rem; }
+.sprite-picker canvas { display: block; width: 100%; max-width: 384px; margin-bottom: 10px; cursor: pointer; image-rendering: pixelated; background: rgb(0 0 0 / .25); }
+.sprite-preview { display: block; width: 32px; height: 32px; image-rendering: pixelated; }
+
+/* Recipe tree */
+.recipe-scroll { margin-top: 12px; overflow: auto; }
+.recipe-stage { position: relative; width: max-content; min-width: 100%; }
+.recipe-lines { position: absolute; top: 0; left: 0; fill: none; stroke: currentColor; stroke-width: 2; pointer-events: none; }
+#recipe_tree { position: relative; display: flex; justify-content: center; padding: 8px; }
+.recipe-node { display: flex; flex-direction: column; align-items: center; }
+.recipe-kids { display: flex; align-items: flex-start; gap: 10px; margin-top: 34px; }
+.recipe-card { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 104px; min-height: 0; padding: 4px; color: inherit; font: 700 .82rem/1.15 var(--font); text-align: center; background: none; border: 0; box-shadow: none; }
+button.recipe-card:hover:not(:disabled) { background: rgb(255 255 255 / .12); }
+.recipe-card .item-tile { display: grid; place-items: center; }
+.recipe-name { overflow-wrap: anywhere; }
+.recipe-more { color: var(--link); font-size: .72rem; font-weight: 400; }

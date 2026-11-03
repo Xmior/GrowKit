@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recipe Tree · GrowKit</title>
+<meta name="description" content="See how any Growtopia item is spliced, all the way down to its base seeds.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap wrap-wide page">
+<header class="page-head"><h1>Recipe Tree</h1><p id="recipe_info">Loading items...</p></header>
+<section class="box">
+<div class="tool-row search-tools"><input class="search" id="recipe_search" type="search" list="recipe_names" placeholder="Item name or ID..." aria-label="Find an item"><datalist id="recipe_names"></datalist>
+<button type="button" class="btn-sm" id="recipe_expand">Expand all</button><button type="button" class="btn-sm" id="recipe_collapse">Collapse all</button></div>
+<p id="recipe_status" role="status"></p>
+<div class="recipe-scroll"><div class="recipe-stage" id="recipe_stage"><svg class="recipe-lines" id="recipe_lines" aria-hidden="true"></svg><div id="recipe_tree"></div></div></div>
+</section>
+<input type="checkbox" id="using_txt_mode" hidden>
+</main>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/vendor/pako.min.js"></script>
+<script src="assets/js/rt-format.js"></script>
+<script src="assets/js/item-icons.js"></script>
+<script src="assets/js/items-codec.js"></script>
+<script src="assets/js/recipe.js"></script>
+</body>
+</html>

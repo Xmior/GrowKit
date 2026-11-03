@@ -122,9 +122,46 @@ const ItemIcons = (() => {
     }
   }
 
+  // Dinosaur pets have a placeholder cell in items.dat. The client's PetRenderer::RenderDinoIcon
+  // builds them from petleo.rttex: every ID picks a body and a head, tinted from the seed.
+  const DINO = { first: 3952, last: 4078, scale: 0.75, x: 2, y: 8, headX: [6, 12, 8, 7], headY: [-14, -23, -22, -9], headDrop: 16 };
+  const isDino = (item) => {
+    const id = Number(item.item_id);
+    return id >= DINO.first && id <= DINO.last && id % 2 === 0 && Number(item.action_type) === 20;
+  };
+
+  // [x, y] sheet cells: body colour, body shading, head colour, head shading
+  function dinoCells(item) {
+    const index = (Number(item.item_id) - DINO.first) / 2;
+    const body = index % 4;
+    const head = Math.floor(index / 4) % 4;
+    const frame = body === 0 ? 1 : 0;
+    return { body, cells: [[frame, body], [frame + 3, body], [6, head], [7, head]] };
+  }
+
+  function drawDino(ctx, sheet, item, color) {
+    const { body, cells } = dinoCells(item);
+    const size = TILE * DINO.scale;
+    const headX = DINO.x + DINO.headX[body] * DINO.scale;
+    const headY = DINO.y + (DINO.headY[body] + DINO.headDrop) * DINO.scale;
+    const places = [[DINO.x, DINO.y], [DINO.x, DINO.y], [headX, headY], [headX, headY]];
+    cells.forEach(([x, y], i) => {
+      const layer = document.createElement("canvas");
+      layer.width = layer.height = TILE;
+      drawCell(layer.getContext("2d"), sheet, x, y, i % 2 ? null : color);
+      ctx.drawImage(layer, places[i][0], places[i][1], size, size);
+    });
+  }
+
   async function drawItem(ctx, item) {
     const empty = await loadSheet("assets/img/empty.png");
     const id = Number(item.item_id);
+    if (isDino(item)) {
+      const sheet = await loadSheet("assets/game/petleo.png");
+      const seed = findItem(id + 1);
+      if (!sheet || !seed) return drawEmpty(ctx, empty);
+      return drawDino(ctx, sheet, item, seed.seed_color);
+    }
     const action = Number(item.action_type);
     if (action === 19 && !NOT_DRAWN_AS_SEEDS.has(id)) {
       const seeds = await loadSheet("assets/game/seed.png");
@@ -191,6 +228,32 @@ const ItemIcons = (() => {
     ctx.drawImage(layer, 0, 0);
   }
 
+  // Frame by action type, as a cell number of gui_itembox.png read left to right; anything else is 0.
+  // 0 blue blocks, 1 beige backgrounds, 3 green seeds, 5 purple consumables, 6 orange locks, 7 grey components, 8 white clothes, 9 pink artifacts
+  const BOX_COLOR = { 3: 6, 8: 5, 18: 1, 19: 3, 20: 8, 22: 1, 23: 1, 28: 1, 37: 7, 64: 7, 107: 9, 129: 7 };
+  const BOX_CELL = 40;
+
+  function loadBoxFrames(sheet) {
+    for (const color of new Set([0, ...Object.values(BOX_COLOR)])) {
+      const cell = document.createElement("canvas");
+      cell.width = cell.height = BOX_CELL;
+      cell.getContext("2d").drawImage(sheet, (color % 3) * BOX_CELL, Math.floor(color / 3) * BOX_CELL, BOX_CELL, BOX_CELL, 0, 0, BOX_CELL, BOX_CELL);
+      document.documentElement.style.setProperty(`--item-box-${color}`, `url(${cell.toDataURL()})`);
+    }
+  }
+
+  const boxClass = (item) => ` item-box item-box-${BOX_COLOR[item.action_type] || 0}`;
+
+  // The icon alone at 32x32, without the shadow
+  async function render(item) {
+    const layer = document.createElement("canvas");
+    layer.width = layer.height = TILE;
+    const ctx = layer.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    await drawItem(ctx, item);
+    return layer;
+  }
+
   // lookup(id) gives the item with that ID; many icons take their colours from the next item, the seed
-  return { draw, setLookup: (lookup) => { findItem = lookup; } };
+  return { draw, render, loadSheet, sheetPath, isDino, dinoCells, loadBoxFrames, boxClass, setLookup: (lookup) => { findItem = lookup; } };
 })();
