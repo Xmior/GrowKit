@@ -633,8 +633,10 @@ const Weather = (() => {
 
   /* Haze::Init, Update and Render, copied. 20 pieces: each channel 0.5c to c, alpha 0 to 1 (halved in the front half),
      scale 0.5 to 1 of W, speed +-50 and +-10, life 2 to 10 seconds, fading at 0.25 a second, tiled sideways. */
-  function hazePiece(color, W, H, fresh) {
+  function hazePiece(color, W, H, fresh, clampToRed) {
     const tone = color.map((c) => between(0.5 * c, c) | 0);
+    // Flag +0x10c keeps green and blue at or below red; it's what turns Apocalypse's green into grey smoke
+    if (clampToRed) { tone[1] = Math.min(tone[1], tone[0]); tone[2] = Math.min(tone[2], tone[0]); }
     const front = Math.random() < 0.5;
     const peak = front ? 0.5 : 1;
     return { tone, front, peak, x: Math.random() * W, y: between(-0.25 * H, H), vx: between(-50, 50), vy: between(-10, 10), life: between(2, 10), scale: between(0.5, 1), flip: Math.random() < 0.5, alpha: fresh ? 0 : Math.random() * peak };
@@ -658,13 +660,13 @@ const Weather = (() => {
     ctx.globalAlpha = 1;
   }
 
-  // color is what SetColor gets: orange and green are from its callers, purple and cyan from the captures
-  function hazeWeather(W, H, dt, color, withCity) {
+  // color is what SetColor gets in the weather factory
+  function hazeWeather(W, H, dt, color, withCity, clampToRed = false) {
     const image = layerOf("haze");
     sunnySky(W, H, `rgb(${color.map((c) => c >> 1).join(",")})`);
     if (withCity) sky("sunset", W, H);
     if (!image) return;
-    scene.hazes ||= Array.from({ length: 20 }, () => hazePiece(color, W, H, false));
+    scene.hazes ||= Array.from({ length: 20 }, () => hazePiece(color, W, H, false, clampToRed));
     const step = (dt || 0) / 1000;
     scene.hazes.forEach((piece, i) => {
       piece.x += piece.vx * step * (W / 1024);
@@ -673,7 +675,7 @@ const Weather = (() => {
       if (piece.life > 0) piece.alpha = Math.min(piece.peak, piece.alpha + 0.25 * step);
       else {
         piece.alpha -= 0.25 * step;
-        if (piece.alpha <= 0) scene.hazes[i] = hazePiece(color, W, H, true);
+        if (piece.alpha <= 0) scene.hazes[i] = hazePiece(color, W, H, true, clampToRed);
       }
     });
     // The captures go brighter than the colour allows, so the heatwaves are drawn additively; the client's blend flag wasn't read
@@ -1477,11 +1479,11 @@ const Weather = (() => {
       });
     },
     // Same class with the sunset and skyline switched on
-    Apocalypse: (W, H, seconds, dt) => hazeWeather(W, H, dt, [90, 90, 80], true),
-    "Purple Haze": (W, H, seconds, dt) => hazeWeather(W, H, dt, [255, 64, 255], false),
-    "Fire Haze": (W, H, seconds, dt) => hazeWeather(W, H, dt, [255, 128, 64], false),
+    Apocalypse: (W, H, seconds, dt) => hazeWeather(W, H, dt, [64, 255, 64], true, true),
+    "Purple Haze": (W, H, seconds, dt) => hazeWeather(W, H, dt, [255, 0, 255], false),
+    "Fire Haze": (W, H, seconds, dt) => hazeWeather(W, H, dt, [255, 128, 64], false, true),
     "Green Haze": (W, H, seconds, dt) => hazeWeather(W, H, dt, [64, 255, 64], false),
-    "Aqua Haze": (W, H, seconds, dt) => hazeWeather(W, H, dt, [64, 255, 255], false),
+    "Aqua Haze": (W, H, seconds, dt) => hazeWeather(W, H, dt, [0, 255, 255], false),
     "Custom Haze": (W, H, seconds, dt) => hazeWeather(W, H, dt, [255, 128, 64], false),
     // Id 19: flat sky with the Pineapple item falling
     Pineapple(W, H, seconds) {
