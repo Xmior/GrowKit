@@ -66,6 +66,9 @@ const ItemIcons = (() => {
     }
   }
 
+  // items.dat points these at the wrong cell; the client draws them from their renderer XML
+  const ICON_CELLS = { 15492: [8, 9] }; // NPCRenderers/CrystalTurret.xml
+
   // Layer names and rules below follow the client's icon routine
   const LAYERED_KINDS = new Set([20, 22, 27, 38, 39]); // second cell at x+1, both tinted from the seed
   const GUILD_PATTERNS = { "(Filigree)": 4, "(Harlequin)": 6, "(Plaid)": 8, "(Cross)": 10, "(Slant)": 12, "(Panel)": 14, "(Stripe)": 16, "(Flame)": 18, "(Division)": 20 };
@@ -181,7 +184,7 @@ const ItemIcons = (() => {
     // A texture's _icon sheet always wins over the texture itself
     const texture = String(item.texture);
     const sheet = (await loadSheet(sheetPath(texture.replace(/\.rttex$/i, "_icon.rttex")))) || (await loadSheet(sheetPath(texture)));
-    let [x, y] = iconCell(item);
+    let [x, y] = ICON_CELLS[id] || iconCell(item);
     if (sheet && sheet.width === TILE && sheet.height === TILE) x = y = 0; // single-icon sheet
     if (!sheet || (x + 1) * TILE > sheet.width || (y + 1) * TILE > sheet.height) return drawEmpty(ctx, empty);
 
@@ -255,5 +258,5 @@ const ItemIcons = (() => {
   }
 
   // lookup(id) gives the item with that ID; many icons take their colours from the next item, the seed
-  return { draw, render, loadSheet, sheetPath, isDino, dinoCells, loadBoxFrames, boxClass, setLookup: (lookup) => { findItem = lookup; } };
+  return { draw, render, loadSheet, sheetPath, iconOverride: (id) => ICON_CELLS[id], isDino, dinoCells, loadBoxFrames, boxClass, setLookup: (lookup) => { findItem = lookup; } };
 })();

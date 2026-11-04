@@ -14,7 +14,17 @@
 <section class="box">
 <div class="tool-row search-tools"><input class="search" id="item_search" type="search" placeholder="Search by name or ID..." aria-label="Search items">
 <label class="check"><input type="checkbox" id="show_seeds"> <span>Showing seeds</span></label>
+<label class="check"><input type="checkbox" id="ignore_null" checked> <span>Ignore null_items</span></label>
 <div class="edit-mode" role="group" aria-label="View"><button type="button" class="btn-sm" id="view_grid" aria-pressed="true">Grid</button><button type="button" class="btn-sm" id="view_list" aria-pressed="false">List</button></div></div>
+<details class="item-filters" open><summary>Filters</summary><div class="filter-grid">
+<label class="field"><span>Block type</span><select id="filter_type"><option value="">Any</option></select></label>
+<label class="field" id="filter_part_wrap" hidden><span>Body Part</span><select id="filter_part"><option value="">Any</option></select></label>
+<label class="field" id="filter_element_wrap"><span>Element</span><select id="filter_element"><option value="">Any</option><option value="0">Earth</option><option value="1">Fire</option><option value="2">Wind</option><option value="3">Water</option></select></label>
+<label class="field"><span>Property</span><select id="filter_property"><option value="">Any</option><option value="recipe">Has a splice recipe</option><option value="norecipe">No splice recipe</option><option value="untradeable">Untradeable</option><option value="seedless">Never drops seeds</option><option value="permanent">Can't be destroyed</option><option value="flippable">Flippable</option><option value="editable">Wrench settings</option><option value="public">Public</option><option value="worldLocked">World-Locked only</option></select></label>
+<fieldset class="field rarity-range"><legend>Rarity</legend><div><input id="filter_min" type="number" min="0" max="998" placeholder="From" aria-label="Rarity from"><span aria-hidden="true">–</span><input id="filter_max" type="number" min="0" max="998" placeholder="To" aria-label="Rarity to"></div></fieldset>
+<label class="field"><span>Sort by</span><select id="filter_sort"><option value="id">ID</option><option value="name">Name</option><option value="rarity_up">Rarity, low to high</option><option value="rarity_down">Rarity, high to low</option></select></label>
+</div><button type="button" class="btn-sm" id="filter_clear">Clear filters</button></details>
+<section id="compare_panel" class="compare-panel" aria-label="Compare items" hidden><div class="compare-scroll"><table id="compare_table"></table></div></section>
 <div id="item_results" class="item-grid"></div>
 <div class="pager"><span id="page_info"></span><nav class="page-nav" aria-label="Pages"><button id="page_prev" class="btn-sm">Previous</button><span class="page-numbers" id="page_numbers"></span><button id="page_next" class="btn-sm">Next</button></nav><label class="page-jump" id="page_jump_wrap" hidden><span>Go to page</span><input id="page_jump" type="number" min="1"></label></div>
 </section>
@@ -24,13 +34,14 @@
 <p id="about_text" class="about-text"></p>
 <p id="about_rarity" class="about-text"></p>
 <div id="about_props" class="about-props"></div>
-<div class="about-actions"><button type="button" class="game-btn" id="about_ok">OK</button><button type="button" class="game-btn" id="about_sprites" aria-expanded="false">Download Sprites</button></div>
+<div class="about-actions"><button type="button" class="game-btn" id="about_ok">OK</button><button type="button" class="game-btn" id="about_sprites" aria-expanded="false">Download Sprites</button><button type="button" class="game-btn" id="about_compare">Compare</button><a class="game-btn" id="about_recipe" target="_blank" rel="noopener" hidden>Show Recipe</a></div>
 <section id="sprite_panel" class="sprite-panel" hidden>
 <div class="tool-row"><label for="sprite_scale">Size</label><select id="sprite_scale"></select><button type="button" class="game-btn" id="sprite_all">Select all</button><button type="button" class="game-btn" id="sprite_zip" disabled>Download selected</button></div>
 <div id="sprite_picker_wrap" class="sprite-picker"><p>Part of the texture sheet. Click a cell to add or remove a frame.</p><canvas id="sprite_picker"></canvas></div>
 <div class="sprite-table"><table><thead><tr><th scope="col">Pick</th><th scope="col">Sprite</th><th scope="col">Part</th><th scope="col">Size</th><th scope="col">Save</th></tr></thead><tbody id="sprite_rows"></tbody></table></div>
 </section></div></dialog>
 </main>
+<script src="assets/js/weathers.js"></script>
 <script src="assets/js/common.js"></script>
 <script src="assets/js/clouds.js"></script>
 <script src="assets/vendor/pako.min.js"></script>

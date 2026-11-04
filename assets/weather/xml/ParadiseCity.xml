@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ItemRenderer name="PARADISE_CITY">
+  <Data>
+    <Sprite name="s_bg" fileName="game/bg_pc_sky.rttex"/>
+    <Sprite name="s_city" fileName="game/bg_pc_city.rttex"/>
+    <Sprite name="s_island" fileName="game/bg_pc_island.rttex"/>
+    <Sprite name="s_wave1" fileName="game/bg_pc_waves1.rttex"/>
+    <Sprite name="s_wave2" fileName="game/bg_pc_waves2.rttex"/>
+    <Sprite name="s_wave3" fileName="game/bg_pc_waves3.rttex"/>
+
+    <Animations>
+      <SpriteCurveAnimation name="a_wave1" isLoop="true" autoPlay="true" sprite="s_wave1" animTime="5000">
+        <Curve name="alpha">
+          <KeyFrame>0.f, 1.f</KeyFrame>
+          <KeyFrame>0.33f, 0.f</KeyFrame>
+          <KeyFrame>0.66f, 0.f</KeyFrame>
+          <KeyFrame>1.f, 1.f</KeyFrame>
+        </Curve>
+      </SpriteCurveAnimation>
+      <SpriteCurveAnimation name="a_wave2" isLoop="true" autoPlay="true" sprite="s_wave2" animTime="5000">
+        <Curve name="alpha">
+          <KeyFrame>0.f, 0.f</KeyFrame>
+          <KeyFrame>0.33f, 1.f</KeyFrame>
+          <KeyFrame>0.66f, 0.f</KeyFrame>
+          <KeyFrame>1.f, 0.f</KeyFrame>
+        </Curve>
+      </SpriteCurveAnimation>
+      <SpriteCurveAnimation name="a_wave3" isLoop="true" autoPlay="true" sprite="s_wave3" animTime="5000">
+        <Curve name="alpha">
+          <KeyFrame>0.f, 0.f</KeyFrame>
+          <KeyFrame>0.33f, 0.f</KeyFrame>
+          <KeyFrame>0.66f, 1.f</KeyFrame>
+          <KeyFrame>1.f, 0.f</KeyFrame>
+        </Curve>
+      </SpriteCurveAnimation>
+    </Animations>
+    
+  </Data>
+  <RenderRules>
+    <RenderBackground>
+      <ContextUpdate type="ScaleScreenHeight">
+        <Set name="sprite">s_bg</Set>
+      </ContextUpdate>
+      <ContextUpdate type="PositionParallax">
+        <Set name="scale">0</Set>
+      </ContextUpdate>
+      <SpriteRender name="s_bg" offset="0, 1" blend="PREMULTIPLIED_ALPHA" alignment="DOWN_LEFT" />
+
+      <ContextUpdate type="ScaleScreenHeight">
+        <Set name="sprite">s_city</Set>
+        <Set name="padding">0</Set>
+      </ContextUpdate>
+
+      <ContextUpdate type="PositionParallax">
+        <Set name="scale">0.1</Set>
+      </ContextUpdate>
+      <SpriteRender name="s_city" offset="0, 1" blend="PREMULTIPLIED_ALPHA" alignment="DOWN_LEFT" />
+      <SpriteRender name="s_wave1" offset="0, 1" scale="1,0.85" blend="PREMULTIPLIED_ALPHA" alignment="DOWN_LEFT" />
+      <SpriteRender name="s_wave2" offset="0.1, 1" scale="1,0.85" blend="PREMULTIPLIED_ALPHA" alignment="DOWN_LEFT" />
+      <SpriteRender name="s_wave3" offset="0.2, 1" scale="1,0.85" blend="PREMULTIPLIED_ALPHA" alignment="DOWN_LEFT" />
+      
+      <ContextUpdate type="PositionParallax">
+        <Set name="scale">0.1</Set>
+        <Set name="wrapHorizontal">true</Set>
+        <Set name="worldAttachmentType">Center</Set>
+      </ContextUpdate>
+      <SpriteRender name="s_island" offset="-0.5, 1" blend="PREMULTIPLIED_ALPHA" alignment="DOWN_LEFT" />
+      
+    </RenderBackground>
+  </RenderRules>
+</ItemRenderer>

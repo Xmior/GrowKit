@@ -1,0 +1,714 @@
+<div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr"><p>This page is for special commands.
+</p>
+
+<h2><span class="mw-headline" id="Super_Supporter_Commands">Super Supporter Commands</span></h2>
+<table class="fandom-table">
+<tbody><tr>
+<th>Command
+</th>
+<th>Description
+</th></tr>
+<tr>
+<td>/hidestatus
+</td>
+<td>Hides the Super Suppoter title
+</td></tr>
+<tr>
+<td>/warp
+</td>
+<td>Warps you a world you select
+</td></tr></tbody></table>
+<h2><span class="mw-headline" id="Guardian_Commands">Guardian Commands</span></h2>
+<table class="fandom-table">
+<tbody><tr>
+<th>Command
+</th>
+<th>Description
+</th></tr>
+<tr>
+<td>/gghell
+</td>
+<td>Curses the specified player for 8 hours.
+<p>Usage: /gghell &lt;exact name, partial name, or UserID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/ggquiet
+</td>
+<td>Silents the specified player for 8 hours.
+<p>Usage: /ggquiet &lt;exact name, partial name, or UserID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/ghelsil
+</td>
+<td>Silents and curses the specified player for 8 hours.
+<p>Usage; /ghelsil &lt;exact name, partial name, or UserID&gt;
+</p>
+</td></tr></tbody></table>
+<h2><span class="mw-headline" id="Moderator_Commands">Moderator Commands</span></h2>
+<table class="fandom-table">
+<tbody><tr>
+<th>Command
+</th>
+<th>Description
+</th></tr>
+<tr>
+<td>/ban
+</td>
+<td>This let's any moderator to ban anyone from the game for a specified time. It will also broadcast "** The Ancients have used Ban on &lt;Name&gt;! **" at the user's world, if they are online.
+<p>Usage is: /ban &lt;partial name, exact match or userID&gt; &lt;minutes&gt; &lt;optional filters: (soft, hard, ip)&gt; &lt;optional reason&gt;
+</p>
+</td></tr>
+<tr>
+<td>/pban
+</td>
+<td>Works nearly identically to the /ban command. This would broadcast "The Ancient Ones have Banned &lt;Name&gt; ** (/rules to see the rules!)" to the whole server if the user is online.
+</td></tr>
+<tr>
+<td>/tape
+</td>
+<td>This let's a moderator Duct Tape a target person for X minutes. It will also broadcast they were taped to the world.
+<p>Usage is: /tape &lt;partial name, exact match or userID&gt; &lt;minutes&gt; &lt;optional filters: (soft, hard, ip)&gt; &lt;optional reason&gt;
+</p>
+</td></tr>
+<tr>
+<td>/ptape
+</td>
+<td>This would broadcast they were taped to the whole server as long as the user is online.
+</td></tr>
+<tr>
+<td>/curse
+</td>
+<td>This would let a staff member curse a player to the world HELL for X minutes (meaning they can not leave until the Curse is over). It will also broadcast they were cursed to the world.
+<p>Usage is: /curse &lt;partial name, exact match or userID&gt; &lt;minutes&gt; &lt;optional filters: (soft, hard, ip)&gt; &lt;optional reason&gt;
+</p>
+</td></tr>
+<tr>
+<td>/pcurse
+</td>
+<td>This would broadcast they were cursed to the whole server if the user is online.
+</td></tr>
+<tr>
+<td>/tapecurse
+</td>
+<td>Duct tapes and curses a player with one command!
+<p>Usage: /tapecurse &lt;exact name, partial name, or UserID&gt; &lt;time&gt; &lt;optional: reason&gt;
+</p>
+</td></tr>
+<tr>
+<td>/silence
+</td>
+<td>This would let a staff member silence a player for X minutes. This means they can not say a word even if they sent a message. This will broadcast they were cursed to the whole world they are at.
+<p>Usage is: /silence &lt;partial name, exact match or userID&gt; &lt;minutes&gt; &lt;optional filters: (soft, hard, ip)&gt; &lt;optional reason&gt;
+</p>
+</td></tr>
+<tr>
+<td>/psilence
+</td>
+<td>This would broadcast they were silenced
+</td></tr>
+<tr>
+<td>/sbban
+</td>
+<td>This will ban a person from being able to use the /broadcast (or /sb) feature for X minutes. It would also broadcast the Broadcast Ban to the world.
+<p>Usage is: /sbban &lt;partial name, exact match or userID&gt; &lt;minutes&gt; &lt;optional filters: (soft, hard, ip)&gt; &lt;optional reason&gt;
+</p>
+</td></tr>
+<tr>
+<td>/psbban
+</td>
+<td>This would broadcast they were broadcast banned.
+</td></tr>
+<tr>
+<td>/boot
+</td>
+<td>This will let a mod ban a player from the world they are at, if they have access. Same as /ban for ordinary players.
+<p>Usage is: /boot &lt;exact match or partial name&gt;
+</p>
+</td></tr>
+<tr>
+<td>/aban
+</td>
+<td>This command would simulate a fake autoban on an user. It ignores the &lt;minutes&gt; argument even though it let's you to write it, using this command instead will always ban the person for 30 days.
+<p>Usage is: /aban &lt;partial name, exact match or userID&gt; &lt;minutes&gt; &lt;optional reason&gt;
+</p>
+</td></tr>
+<tr>
+<td>/note
+</td>
+<td>This will let a moderator leave notes about a player that only other staff members can see! If the &lt;text message&gt; argument is empty, it will note the user as "&lt;the target's name&gt;".
+<p>Usage is: /note &lt;partial name, exact match or userID&gt; &lt;text message (it would add this as the note)&gt;
+</p>
+</td></tr>
+<tr>
+<td>/warn
+</td>
+<td>This will let a moderator do a warning on the user's screen if they are online.
+<p>Usage is: /warn &lt;partial name, exact match or userID&gt; &lt;text message (it would warn for this)&gt;
+</p>
+</td></tr>
+<tr>
+<td>/notes
+</td>
+<td>This command will let a staff member view the notes of the target user (bans, notes, etc)
+<p>Usage is: /notes &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/info
+</td>
+<td>Shows information about a player such as their IP address, account creation date and total worlds made ever.
+<p>Usage is: /info &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/infoex
+</td>
+<td>Shows extra information about a player such as their World Locked worlds, Inventory items and level.
+<p>Usage is: /infoex &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/punish
+</td>
+<td>Opens a dialog box that shows someone's latest few notes, alternate accounts (according to RID (Robinson ID)) and let's you ban for template durations.
+<p>Usage is: /punish &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/remove
+</td>
+<td>Let's you remove any item from a player's inventory (if they have it).
+<p>Usage is: /remove &lt;partial name, exact match or userID&gt; &lt;count of items to remove&gt; &lt;full item name or ID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/reports
+</td>
+<td>Shows a list of reported worlds according to the amount of reports the world has.
+</td></tr>
+<tr>
+<td>/find
+</td>
+<td>Finds a player from the database according to the provided name. Gives you information such as their account flags and unique id.
+<p>Usage is: /find &lt;exact match&gt;
+</p>
+</td></tr>
+<tr>
+<td>/warpto
+</td>
+<td>Let's you warp directly to a target player.
+<p>Usage is: /warpto &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/playerreport
+</td>
+<td>Checks player reports.
+</td></tr>
+<tr>
+<td>/ipcheck
+</td>
+<td>Finds up to 40 users with the same IP address as the provided player name.
+<p>Usage is: /ipcheck &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/maccheck
+</td>
+<td>Finds up to 40 users with the same MAC address as the provided player name.
+<p>Usage is: /maccheck &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/devicecheck
+</td>
+<td>Finds up to 40 users with the same device ID as the provided player name. This command is only 90% accurate.
+<p>Usage is: /devicecheck &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/ridcheck
+</td>
+<td>Finds up to 40 users with the same RID (Robinson ID) as the provided player name.
+<p>Usage is: /ridcheck &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/vidcheck
+</td>
+<td>Finds up to 40 users with the same VID as the provided player name.
+<p>Usage is: /vidcheck &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/aidcheck
+</td>
+<td>Finds up to 40 users with the same AID as the provided player name.
+<p>Usage is: /aidcheck &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/sidcheck
+</td>
+<td>Finds up to 40 users with the same SID as the provided player name.
+<p>Usage is: /sidcheck &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/ghost
+</td>
+<td>Toggles ghost mode. While a ghost, you can walk through walls. The antihack systems won't pick you up as a cheater because the server knows you are a mod.
+<p>You can also jump an unlimited number of times to sort of "fly". If you have a desktop client you can also go down. On phone client, you can use joystick.
+</p>
+</td></tr>
+<tr>
+<td>/invis
+</td>
+<td>Toggles invisibility. While invisible, no one can see you and your jumps don't make a sound.
+</td></tr>
+<tr>
+<td>/nick
+</td>
+<td>Let's you change your name to anything between 3 and 20 characters. It also let's you to use dots (.) or dashes (-)
+<p>Usage is: /nick &lt;new name&gt;
+</p>
+</td></tr>
+<tr>
+<td>/massworldban
+</td>
+<td>World bans everyone from the world for one hour. This does not require admin permissions in the world.
+</td></tr>
+<tr>
+<td>/masskick
+</td>
+<td>Kills everyone in the world. Very similar to /kickall, but it just does it instantly. Interestingly enough when you run this command, it will show Used fireball on X people in &lt;world name&gt; (Mass: )
+</td></tr>
+<tr>
+<td>/massfreeze
+</td>
+<td>Used to freeze everyone in the current world for X seconds. This is mostly used for fun!
+<p>Usage: /massfreeze &lt;seconds&gt; &lt;optional: comment&gt;
+</p>
+</td></tr>
+<tr>
+<td>/massban
+</td>
+<td>Bans everyone in the world for X minutes. Maxium duration for it is 5 days.
+<p>Usage is: /massban &lt;minutes&gt; &lt;comment&gt;
+</p>
+</td></tr>
+<tr>
+<td>/masstape
+</td>
+<td>Duct Tapes everyone in the current world for X minutes. Maxium duration for it is 5 days.
+<p>Usage is: /masstape &lt;minutes&gt; &lt;comment&gt;
+</p>
+</td></tr>
+<tr>
+<td>/masscurse
+</td>
+<td>Curses everyone to the world HELL for X minutes. Maxium duration for it is 5 days.
+<p>Usage is: /masscurse &lt;minutes&gt; &lt;comment&gt;
+</p>
+</td></tr>
+<tr>
+<td>/banworld
+</td>
+<td>Bans everyone in the world for one hour and closes it so only moderators (or above) can enter it.
+</td></tr>
+<tr>
+<td>/nuke
+</td>
+<td>Bans every admin and owner for X minutes. Also closes the world.
+<p>Usage is: /nuke &lt;minutes&gt; &lt;note&gt;
+</p>
+</td></tr>
+<tr>
+<td>/pnuke
+</td>
+<td>Identical to /nuke, but just broadcasts the infamous "&lt;World&gt; was nuked from orbit. Play safe, everybody!" message for everyone to see
+<p>Usage is: /pnuke &lt;minutes&gt; &lt;note&gt;
+</p>
+</td></tr>
+<tr>
+<td>/casinoban
+</td>
+<td>This works as a macro for "/nuke 1051200 casino | Perma-08" (it executes the command). Used in casino worlds.
+</td></tr>
+<tr>
+<td>/pcasinoban
+</td>
+<td>This works as a macro for "/pnuke 1051200 casino | Perma-08" (it executes the command). Used in casino worlds.
+</td></tr>
+<tr>
+<td>/rename
+</td>
+<td>Let's a mod change a player's display name to something else (they still log in with their old name). This will give the account the "NAMELOCK" flag meaning they can no longer create a GrowID. Only a game admin can revert this name change.
+<p>Usage is: /rename &lt;user&gt; &lt;new name&gt;
+</p>
+</td></tr>
+<tr>
+<td>/renameworld
+</td>
+<td>Renames a world without costing you “Change of Address”
+<p>Usage: /renameworld &lt;new world name&gt;
+</p>
+</td></tr>
+<tr>
+<td>/transferworld
+</td>
+<td>Transfer a world into a specific name or userID
+</td></tr>
+<tr>
+<td>/warptolock
+</td>
+<td>Warps you to the world lock of your current world.
+</td></tr></tbody></table>
+<h2><span id="SMOD.2FDeveloper_Commands"></span><span class="mw-headline" id="SMOD/Developer_Commands">SMOD/Developer Commands</span></h2>
+<table class="fandom-table">
+<tbody><tr>
+<th>Command
+</th>
+<th>Description
+</th></tr>
+<tr>
+<td>/maint
+</td>
+<td>Allows smod to claim their daily rewards of either wands or tapes and 20k gems.
+</td></tr>
+<tr>
+<td>/flag
+</td>
+<td>Changes your flag to the specified flag id
+<p>Usage: /flag in (in is india)
+</p>
+</td></tr>
+<tr>
+<td>/give
+</td>
+<td>Gives ANY item from the game to the target player.
+<p>Usage is: /give &lt;partial name, exact match or userID&gt; &lt;count of items to give&gt; &lt;full item name or ID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/age
+</td>
+<td>Artifically ages the world (meaning Trees or Providers (and etc) grow faster)
+<p>Usage is: /age &lt;minutes&gt;
+</p>
+</td></tr>
+<tr>
+<td>/selfage
+</td>
+<td>Ages the person using the command. This means playmods will wear off and their hours played will increase.
+<p>Usage is: /selfage &lt;seconds&gt;
+</p>
+</td></tr>
+<tr>
+<td>/edit
+</td>
+<td>Edits the terrain with the given mode (was it adding world drops or placing blocks. It has it all). Only works in non locked worlds (or the worlds you own).
+<p><br />
+There are 4 modes which are: add, clear, addobject, clearobject.
+</p><p>add: used to add anything as blocks. This includes clothings
+clear: used to clear stuffs..
+</p><p>addobject: used to spawn items as dropped items. Fun fact, when Seth got hacked, the hacker used this to spawn items.
+</p><p>clearobject: used to clear dropped items.
+</p><p>Usage is: /edit &lt;mode&gt; &lt;radius&gt; &lt;full item name or ID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/unsafeedit
+</td>
+<td>Identical to /edit, but let's you terraform areas you don't have access in.
+</td></tr>
+<tr>
+<td>/setbit
+</td>
+<td>Sets world bit flags (meaning it will enable different rules in the world)
+<p>Usage is: /setbit &lt;nolocks, immune, norank, noevents, nogo&gt;
+</p>
+</td></tr>
+<tr>
+<td>/resetworld
+</td>
+<td>Resets the world to look like a brand new one.
+<p>Usage is: /resetworld &lt;optional width&gt; &lt;optional height&gt;
+</p><p>P.S.&#160;: Render system max can render 255x255 worlds and a min of 30x30
+</p>
+</td></tr>
+<tr>
+<td>/dropall
+</td>
+<td>Trashes all your items.
+</td></tr>
+<tr>
+<td>/settoysdelivered
+</td>
+<td>set the total toys delivered to this value
+</td></tr>
+<tr>
+<td>/setxmasdonations
+</td>
+<td>set the total stuff-4-toys donations to 100
+</td></tr>
+<tr>
+<td>/setbigxmasdonations
+</td>
+<td>set the billions column of the total stuff-4-toys donations to 100
+</td></tr>
+<tr>
+<td>/setstuff4toys
+</td>
+<td>set the undelivered stuff4toys donations to 100
+</td></tr>
+<tr>
+<td>/setbigstuff4toys
+</td>
+<td>set the billions column of the undelivered stuff-4-toys donations to 100
+</td></tr>
+<tr>
+<td>/setpotogoldprizesgiven
+</td>
+<td>set the total prizes given to this value
+</td></tr>
+<tr>
+<td>/setstpatricksdonations
+</td>
+<td>set the total Giant Pot 'O' Gold donations to 100
+</td></tr>
+<tr>
+<td>/setbigstpatricksdonations
+</td>
+<td>set the billions column of the total Giant Pot 'O' Gold donations to 100
+</td></tr>
+<tr>
+<td>/setgiantpotogold
+</td>
+<td>set the undelivered Giant Pot 'O' Gold donations to 100
+</td></tr>
+<tr>
+<td>/setbiggiantpotogold
+</td>
+<td>set the billions column of the undelivered Giant Pot 'O' Gold donations to 100
+</td></tr>
+<tr>
+<td>/setweather
+</td>
+<td>Sets the world base weather. This means the main weather of the world will be the chosen one.
+<p>Usage is: /setweather &lt;weather ID&gt;
+</p>
+<ul><li>0 - Sunny</li>
+<li>1 - Beach Blast</li>
+<li>2 - Night</li>
+<li>3 - Arid</li>
+<li>4 - Sunny</li>
+<li>5 - Rainy City</li>
+<li>6 - Harvest Moon Blast</li>
+<li>7 - Mars Blast</li>
+<li>8 - Spooky</li>
+<li>9 - GrowGanoth</li>
+<li>10 - Nothingless?</li>
+<li>11 - Snowy</li>
+<li>12 - Snowy Night - Growch Angry</li>
+<li>13 - Snowy - Growch Happy</li>
+<li>14 - Undersea Blast</li>
+<li>15 - Warp</li>
+<li>16 - Night Of The Comet</li>
+<li>17 - Comet</li>
+<li>18 - Party</li>
+<li>19 - Pineapple</li>
+<li>20 - Snowy Night</li>
+<li>21 - Spring</li>
+<li>22 - Howling</li>
+<li>23 - Sunny</li>
+<li>24 - Purple Heatwave</li>
+<li>25 - Orange Heatwave</li>
+<li>26 - Green Heatwave</li>
+<li>27 - Cyan Heatwave</li>
+<li>28 - Orange Heatwave</li>
+<li>29 - Stuff</li>
+<li>30 - Padoga</li>
+<li>31 - Apocalypse</li>
+<li>32 - Jungle</li>
+<li>33 - Balloonwarz</li>
+<li>34 - Background</li>
+<li>35 - Autumn</li>
+<li>36 - Hearts</li>
+<li>37 - St.Patricks</li>
+<li>38 - Iceberg</li>
+<li>39 - Volcano</li>
+<li>40 - Flying Castles</li>
+<li>41 - Sunny</li>
+<li>42 - Digital Rain</li>
+<li>43 - Monochrome Blast</li>
+<li>44 - Treasure Blast</li>
+<li>45 - SurgWorld Blast</li>
+<li>46 - Bountiful Blast</li>
+<li>47 - Meteor Rain</li>
+<li>48 - Stargazing</li>
+<li>49 - Ascended</li>
+<li>50 - Descended</li>
+<li>51 - Celebrity Hills With Ads</li>
+<li>52 - Dungeons</li>
+<li>53 - Legendary City</li>
+<li>54 - Blood Dragon</li>
+<li>55 - Prince Of Persia</li>
+<li>56 - Sunny</li>
+<li>57 - Sunny</li>
+<li>58 - Fully Black Sky</li>
+<li>59 - Fully Black Sky</li>
+<li>60 - Nebula</li>
+<li>61 - Protostar Landing</li>
+<li>62 - Dark Mountains</li>
+<li>63 - Assasin’s Weekend</li>
+<li>64 - Mt. Growmore</li>
+<li>65 - Crack On Reality</li>
+<li>66 - Nian’s Mountain</li>
+<li>67 - Rayman</li>
+<li>68 - SteamPunk</li>
+<li>69 - Realm’s of Spirits</li>
+<li>70 - Black Hole</li>
+<li>71 - Rainin’ Gems</li>
+<li>72 - Holiday Haven</li>
+<li>73 -  Immortals Fenyx Rising Lock</li></ul>
+</td></tr>
+<tr>
+<td>/spawnevent
+</td>
+<td>Used to spawn events such as Jackpot!, Magical Seeds, Crime Wave!, etc. Seth used to spawn gems everywhere using this command
+<p>Usage: /spawnevent &lt;spawnType&gt; &lt;worldID, or -1 for random, blank for current&gt;
+</p>
+</td></tr>
+<tr>
+<td>/exportworld
+</td>
+<td>Exports your current world to disk with given file name so you can later on /importworld &lt;given file name&gt; it somewhere else.
+<p>Usage is: /exportworld &lt;any name you wish&gt;
+</p>
+</td></tr>
+<tr>
+<td>/importworld
+</td>
+<td>Imports the world you exported to the disk at your current world (meaning the world will be overwritten with the exported one)
+<p>Usage is: /importworld &lt;correct file name&gt;
+</p>
+</td></tr></tbody></table>
+<h2><span class="mw-headline" id="Telnet_Commands">Telnet Commands</span></h2>
+<table class="fandom-table">
+<tbody><tr>
+<th>Command
+</th>
+<th>Description
+</th></tr>
+<tr>
+<td>/tail
+</td>
+<td>Used to toggle log contents on telnet. Used when an admin needs to do commands on the telnet.
+<p>Usage: /tail
+</p>
+</td></tr>
+<tr>
+<td>/altcheck
+</td>
+<td>Checks for alternate accounts of an user. It is not known what form of alternate check it uses (such as RID, IP, device ID or etc.)
+<p>Usage is: /altcheck &lt;partial name, exact match or userID&gt;
+</p>
+</td></tr>
+<tr>
+<td>/players
+</td>
+<td>Shows all the local players online in the current sub server.
+</td></tr>
+<tr>
+<td>/load
+</td>
+<td>Reloads the server configuration file.
+</td></tr>
+<tr>
+<td>/mods
+</td>
+<td>Shows the online moderators like in the game.
+</td></tr>
+<tr>
+<td>/set
+</td>
+<td>Sets a player bit flag (such as MOD or SMOD). These flags change the permissions or rules of the target account.
+<p>Usage is: /set &lt;userID&gt; &lt;setting&gt;
+</p>
+</td></tr>
+<tr>
+<td>/unset
+</td>
+<td>Removes a player bit (such as MOD or SMOD)
+<p>Usage is: /unset &lt;userID&gt; &lt;setting&gt;
+</p>
+</td></tr>
+<tr>
+<td>/rankedworlds
+</td>
+<td>Shows the currently highest ranked worlds.
+</td></tr>
+<tr>
+<td>/shutdown
+</td>
+<td>Kills game server
+</td></tr></tbody></table>
+<h2><span id="Beta.2FRemoved_Commands"></span><span class="mw-headline" id="Beta/Removed_Commands">Beta/Removed Commands</span></h2>
+<table class="fandom-table">
+<tbody><tr>
+<th>Command
+</th>
+<th>Description
+</th></tr>
+<tr>
+<td>/buy
+</td>
+<td>Usage:&#160; /buy &amp;lt;userID&amp;gt; &amp;lt;item code name&amp;gt
+</td></tr>
+<tr>
+<td>/modbackpack
+</td>
+<td>Usage&#160;: /modbackpack &lt;slots&gt;
+</td></tr>
+<tr>
+<td>/makemeasmod101
+</td>
+<td>Makes you Developer at beta servers
+</td></tr>
+<tr>
+<td>/makemeamod101
+</td>
+<td>Makes you Moderator at beta servers
+</td></tr>
+<tr>
+<td>/makemeapeon
+</td>
+<td>Makes you Player at beta servers
+</td></tr>
+<tr>
+<td>/infow
+</td>
+<td>Not sure removed, for check world infos (not sure.)
+</td></tr></tbody></table>
+<h2><span class="mw-headline" id="Removed_commands">Removed commands</span></h2>
+<table class="fandom-table">
+<tbody><tr>
+<th>Command
+</th>
+<th>Description
+</th></tr>
+<tr>
+<td>/relocateworld
+</td>
+<td>Used to allow SMOD to move a world to a different subserver. This is used when a crowded world is placed at a crowded subserver leading to bad performance..
+<p>Usage: /relocateworld &lt;subserver&gt;
+</p>
+</td></tr></tbody></table>
+
+
+
+
+</div>

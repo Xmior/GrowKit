@@ -7,7 +7,7 @@ const modal = document.getElementById("item_modal");
 const PAGE_SIZE = { grid: 120, list: 50 };
 const BIT = { flippable: 1, editable: 2, seedless: 4, permanent: 8, dropless: 16, noSelf: 32, worldLocked: 128 };
 const CATEGORY = { randomGrow: 8, public: 16, untradeable: 128 };
-const ACTION = { lock: 3, seed: 19, component: 37, fish: 64 };
+const ACTION = { lock: 3, seed: 19, clothes: 20, artifact: 107, component: 37, fish: 64 };
 const TILE = 32;
 // Keys match elements.json; art comes from the "Element - X" items
 const ELEMENTS = { 0: { id: 6018, name: "Earth" }, 1: { id: 6020, name: "Fire" }, 2: { id: 6022, name: "Wind" }, 3: { id: 6024, name: "Water" } };
@@ -20,6 +20,7 @@ let view = "grid";
 let current = null;
 let button = null;
 let elements = {};
+let petSheets = {};
 
 function itemLines(item) {
   if (item.action_type === ACTION.seed) return [];
@@ -105,6 +106,10 @@ async function openItem(item) {
   }));
   document.getElementById("sprite_panel").hidden = true;
   document.getElementById("about_sprites").setAttribute("aria-expanded", "false");
+  refreshCompareButton();
+  const recipe = field("about_recipe");
+  recipe.hidden = !recipeOf(item);
+  recipe.href = `recipe.html#${item.action_type === ACTION.seed ? item.item_id - 1 : item.item_id}`;
   modal.showModal();
 }
 
@@ -146,10 +151,13 @@ async function sheetMap(texture) {
 
 // Cells taken by each Tile Storage type, wide by tall, measured on the game's sheets
 const STORAGE_BOX = { 2: [8, 6], 3: [4, 1], 4: [5, 1], 5: [8, 2], 6: [4, 1], 7: [4, 1], 8: [10, 1], 9: [4, 1], 10: [4, 1] };
+const MAX_PET_FRAMES = 64;
 const PICKER = { wide: 12, tall: 6 };
 
 // Same row rule as the client's icon lookup: shoes are stored at twice their row
 function firstCell(item) {
+  const override = ItemIcons.iconOverride(item.item_id);
+  if (override) return override;
   const y = item.action_type === 20 && item.clothing_type === 3 ? item.texture_y * 2 : item.texture_y;
   return [item.texture_x, y];
 }
@@ -188,6 +196,15 @@ async function spriteParts(item) {
   const map = await sheetMap(item.texture);
   if (!map) return parts;
   for (const [x, y] of itemCells(map, item)) parts.push(cellPart(map, x, y));
+  // A pet's own sheet is separate from its leash in the hand
+  const petSheet = petSheets[item.item_id];
+  const pet = petSheet && (await sheetMap(petSheet));
+  if (pet) {
+    [...pet.filled].slice(0, MAX_PET_FRAMES).forEach((cell, i) => {
+      const [x, y] = cell.split(",").map(Number);
+      parts.push({ label: `Pet frame ${i + 1}`, source: pet.sheet, sx: x * TILE, sy: y * TILE, file: `pet_${i + 1}` });
+    });
+  }
   return parts;
 }
 
@@ -430,12 +447,169 @@ function render() {
   jump.value = page + 1;
 }
 
+// Artifacts are worn too, so the Clothes filter includes them
+const WEARABLE = new Set([ACTION.clothes, ACTION.artifact]);
+const ARTIFACT_PART = "artifacts";
+const BODY_PARTS = ["Hat", "Shirt", "Pants", "Shoes", "Face", "Hand", "Back", "Hair", "Chest"];
+const field = (id) => document.getElementById(id);
+const elementNumber = (item) => elements[item.action_type === ACTION.seed ? item.item_id - 1 : item.item_id];
+const seedOf = (item) => (item.action_type === ACTION.seed ? item : byId.get(item.item_id + 1));
+
+function recipeOf(item) {
+  const seed = seedOf(item);
+  if (!seed || !seed.ingredient1 || !seed.ingredient2) return null;
+  return [seed.ingredient1, seed.ingredient2].map((id) => byId.get(id - 1)?.name || `ID ${id - 1}`);
+}
+
+function hasProperty(item, property) {
+  if (property === "recipe") return Boolean(recipeOf(item));
+  if (property === "norecipe") return !recipeOf(item);
+  if (property === "untradeable") return Boolean(item.item_category & CATEGORY.untradeable);
+  if (property === "public") return Boolean(item.item_category & CATEGORY.public);
+  return Boolean(item.editable_type & BIT[property]);
+}
+
+// Up to four items side by side
+const COMPARE_MAX = 4;
+const compared = [];
+const compareRows = [
+  ["ID", (item) => item.item_id],
+  ["Block type", (item) => ACTION_TYPES[item.action_type] || `Type ${item.action_type}`],
+  ["Rarity", (item) => (item.rarity === 999 ? "No rarity" : item.rarity)],
+  ["Element", (item) => ELEMENTS[elementNumber(item)]?.name || "Unknown"],
+  ["Recipe", (item) => recipeOf(item)?.join(" + ") || "None"],
+  ["Hits to break", (item) => item.break_hits],
+  ["Healing time", (item) => `${item.drop_chance}s`],
+  ["Grow time", (item) => `${seedOf(item)?.grow_time || 0}s`],
+  ["Stack size", (item) => item.max_amount],
+  ["Tradeable", (item) => !(item.item_category & CATEGORY.untradeable)],
+  ["Drops seeds", (item) => !(item.editable_type & BIT.seedless)],
+  ["Destroyable", (item) => !(item.editable_type & BIT.permanent)],
+  ["Wrench settings", (item) => Boolean(item.editable_type & BIT.editable)],
+];
+
+function compareValue(cell, value) {
+  if (typeof value !== "boolean") {
+    cell.textContent = value;
+    return;
+  }
+  const box = document.createElement("span");
+  box.className = `game-check${value ? " is-on" : ""}`;
+  box.setAttribute("role", "img");
+  box.setAttribute("aria-label", value ? "Yes" : "No");
+  cell.append(box);
+}
+
+function renderCompare() {
+  field("compare_panel").hidden = !compared.length;
+  const head = document.createElement("tr");
+  const corner = document.createElement("td");
+  corner.className = "compare-corner";
+  corner.innerHTML = '<h2>Compare</h2><p class="compare-note">Different values are highlighted.</p>';
+  head.append(corner);
+  for (const item of compared) {
+    const th = document.createElement("th");
+    th.scope = "col";
+    const tile = document.createElement("span");
+    tile.className = `item-tile${ItemIcons.boxClass(item)}`;
+    const icon = document.createElement("canvas");
+    icon.className = "item-icon item-icon-fill";
+    ItemIcons.render(item).then((layer) => {
+      icon.width = icon.height = TILE;
+      icon.getContext("2d").drawImage(layer, 0, 0);
+    });
+    tile.append(icon);
+    const name = document.createElement("span");
+    name.className = "compare-name";
+    name.textContent = item.name;
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "compare-remove";
+    const cross = document.createElement("img");
+    cross.src = "assets/interface/cross.png";
+    cross.alt = "";
+    remove.append(cross);
+    remove.setAttribute("aria-label", `Remove ${item.name}`);
+    remove.addEventListener("click", () => {
+      compared.splice(compared.indexOf(item), 1);
+      renderCompare();
+    });
+    tile.append(remove);
+    th.append(tile, name);
+    head.append(th);
+  }
+  const rows = compareRows.map(([label, read]) => {
+    const row = document.createElement("tr");
+    const th = document.createElement("th");
+    th.scope = "row";
+    th.textContent = label;
+    row.append(th);
+    const values = compared.map(read);
+    row.classList.toggle("is-different", new Set(values.map(String)).size > 1);
+    for (const value of values) {
+      const td = document.createElement("td");
+      compareValue(td, value);
+      row.append(td);
+    }
+    return row;
+  });
+  field("compare_table").replaceChildren(head, ...rows);
+  refreshCompareButton();
+}
+
+function refreshCompareButton() {
+  if (!current) return;
+  const added = compared.includes(current);
+  const button = field("about_compare");
+  button.textContent = added ? "Remove from Compare" : "Compare";
+  button.disabled = !added && compared.length >= COMPARE_MAX;
+}
+
+field("about_compare").addEventListener("click", () => {
+  const index = compared.indexOf(current);
+  if (index >= 0) compared.splice(index, 1);
+  else compared.push(current);
+  renderCompare();
+});
+
 function applyFilter() {
   const query = search.value.trim().toLowerCase();
+  const type = field("filter_type").value;
+  const part = field("filter_part").value;
+  const element = field("filter_element").value;
+  const property = field("filter_property").value;
+  const min = field("filter_min").value;
+  const max = field("filter_max").value;
   filtered = all.filter((item) => {
     if (!showSeeds.checked && item.action_type === 19) return false;
-    return !query || String(item.item_id) === query || item.name.toLowerCase().includes(query);
+    if (field("ignore_null").checked && /^null_item/i.test(item.name)) return false;
+    if (query && String(item.item_id) !== query && !item.name.toLowerCase().includes(query)) return false;
+    if (type === String(ACTION.clothes)) {
+      if (!WEARABLE.has(item.action_type)) return false;
+      if (part === ARTIFACT_PART) {
+        if (item.action_type !== ACTION.artifact) return false;
+      } else if (part && (item.action_type === ACTION.artifact || item.clothing_type !== Number(part))) {
+        return false;
+      }
+    } else if (type && item.action_type !== Number(type)) {
+      return false;
+    }
+    if (element && elementNumber(item) !== Number(element)) return false;
+    if (property && !hasProperty(item, property)) return false;
+    // 999 means no rarity, so a rarity range leaves those items out
+    if ((min || max) && item.rarity === 999) return false;
+    if (min && item.rarity < Number(min)) return false;
+    if (max && item.rarity > Number(max)) return false;
+    return true;
   });
+  const rarityOf = (item, none) => (item.rarity === 999 ? none : item.rarity);
+  const sorts = {
+    name: (a, b) => a.name.localeCompare(b.name),
+    rarity_up: (a, b) => rarityOf(a, Infinity) - rarityOf(b, Infinity) || a.item_id - b.item_id,
+    rarity_down: (a, b) => rarityOf(b, -1) - rarityOf(a, -1) || a.item_id - b.item_id,
+  };
+  const sort = sorts[field("filter_sort").value];
+  if (sort) filtered.sort(sort);
   page = 0;
   render();
 }
@@ -448,8 +622,27 @@ function setView(next) {
   render();
 }
 
+for (const id of ["filter_element", "filter_property", "filter_min", "filter_max", "filter_sort"]) field(id).addEventListener("input", applyFilter);
+field("filter_part").append(...BODY_PARTS.map((name, value) => new Option(name, value)), new Option("Artifacts", ARTIFACT_PART));
+field("filter_type").addEventListener("input", () => {
+  const clothes = field("filter_type").value === String(ACTION.clothes);
+  field("filter_part_wrap").hidden = !clothes;
+  if (!clothes) field("filter_part").value = "";
+  field("filter_element_wrap").hidden = clothes;
+  if (clothes) field("filter_element").value = "";
+  applyFilter();
+});
+field("filter_part").addEventListener("input", applyFilter);
+field("filter_clear").addEventListener("click", () => {
+  for (const id of ["filter_type", "filter_part", "filter_element", "filter_property", "filter_min", "filter_max"]) field(id).value = "";
+  field("filter_part_wrap").hidden = true;
+  field("filter_element_wrap").hidden = false;
+  field("filter_sort").value = "id";
+  applyFilter();
+});
 search.addEventListener("input", applyFilter);
 showSeeds.addEventListener("change", applyFilter);
+field("ignore_null").addEventListener("change", applyFilter);
 document.getElementById("view_grid").addEventListener("click", () => setView("grid"));
 document.getElementById("view_list").addEventListener("click", () => setView("list"));
 document.getElementById("page_prev").addEventListener("click", () => { page--; render(); });
@@ -468,6 +661,9 @@ window.onItemsDecoded = (data) => {
   byId = new Map(all.map((item) => [item.item_id, item]));
   ItemIcons.setLookup((id) => byId.get(id));
   document.getElementById("search_info").textContent = `${all.length} items from the latest items.dat (version ${data.version}). Click an item to open it.`;
+  const types = [...new Set(all.map((item) => item.action_type))].filter((type) => ACTION_TYPES[type]);
+  types.sort((a, b) => ACTION_TYPES[a].localeCompare(ACTION_TYPES[b]));
+  field("filter_type").append(...types.map((type) => new Option(ACTION_TYPES[type], type)));
   applyFilter();
 };
 
@@ -477,11 +673,13 @@ window.onItemsDecoded = (data) => {
     if (button) document.documentElement.style.setProperty("--game-button", `url(${tintedButton().toDataURL()})`);
     const boxes = await picture("assets/game/gui_itembox.png");
     if (boxes) ItemIcons.loadBoxFrames(boxes);
-    const [elementData, dat] = await Promise.all([
+    const [elementData, petData, dat] = await Promise.all([
       fetch("assets/data/elements.json").then((r) => (r.ok ? r.json() : {})),
+      fetch("assets/data/pet-sheets.json").then((r) => (r.ok ? r.json() : {})),
       fetch("assets/data/items.dat").then((r) => { if (!r.ok) throw new Error("items.dat was not found."); return r.blob(); }),
     ]);
     elements = elementData;
+    petSheets = petData;
     item_decoder(dat, true);
   } catch (error) {
     document.getElementById("search_info").textContent = `The item list could not be loaded: ${error.message}`;

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Items.dat Archive · GrowKit</title>
+<meta name="description" content="Browse and compare old Growtopia items.dat versions.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap wrap-wide page">
+<header class="page-head"><h1>Items.dat Archive</h1><p id="archive_info">Loading...</p></header>
+<section class="box">
+<h2>Compare two versions</h2>
+<div class="archive-pick">
+<label class="field"><span>Older</span><select id="archive_a"></select></label>
+<button type="button" class="btn-sm" id="archive_swap" aria-label="Swap versions">⇄</button>
+<label class="field"><span>Newer</span><select id="archive_b"></select></label>
+<button type="button" class="btn-save" id="archive_compare">Compare</button>
+</div>
+<p id="archive_status" role="status"></p>
+<div id="diff_panel" hidden>
+<div class="tool-row search-tools"><input class="search" id="diff_search" type="search" placeholder="Search by name or ID..." aria-label="Search changes">
+<label class="check"><input type="checkbox" id="diff_seeds"> <span>Showing seeds</span></label>
+<div class="edit-mode" role="group" aria-label="Show"><button type="button" class="btn-sm" data-kind="added" aria-pressed="true" id="diff_added">Added</button><button type="button" class="btn-sm" data-kind="changed" aria-pressed="false" id="diff_changed">Changed</button><button type="button" class="btn-sm" data-kind="removed" aria-pressed="false" id="diff_removed">Removed</button></div></div>
+<div id="diff_list" class="item-list"></div>
+<div class="pager"><span id="diff_info"></span><nav class="page-nav" aria-label="Pages"><button id="diff_prev" class="btn-sm">Previous</button><button id="diff_next" class="btn-sm">Next</button></nav></div>
+</div>
+</section>
+<section class="box">
+<h2>All versions</h2>
+<div class="compare-scroll"><table class="archive-table"><thead><tr><th scope="col">Version</th><th scope="col">Format</th><th scope="col">Items</th><th scope="col">Size</th><th scope="col">File</th></tr></thead><tbody id="archive_rows"></tbody></table></div>
+</section>
+<input type="checkbox" id="using_txt_mode" hidden>
+</main>
+<script src="assets/js/weathers.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/vendor/pako.min.js"></script>
+<script src="assets/js/rt-format.js"></script>
+<script src="assets/js/item-icons.js"></script>
+<script src="assets/js/items-codec.js"></script>
+<script src="assets/js/archive.js"></script>
+</body>
+</html>

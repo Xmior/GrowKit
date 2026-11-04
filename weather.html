@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weather Viewer · GrowKit</title>
+<meta name="description" content="Extra Growtopia file tools.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap wrap-wide page">
+<header class="page-head"><h1>Weather Viewer <span class="wip-badge">Work in Progress</span></h1><p>Play the game's weather backgrounds.</p></header>
+<section class="box" id="weather_box">
+<div class="tool-row"><select id="weather_select" aria-label="Weather"></select><label class="weather-camera"><span>Camera</span><input id="weather_camera" type="range" min="0" max="4000" value="0"></label><button type="button" id="weather_png" class="btn-sm">Save PNG</button></div>
+<canvas id="weather_canvas" class="weather-canvas" width="960" height="603"></canvas>
+<p class="status-text" id="weather_status" role="status"></p>
+</section>
+</main>
+<script src="assets/js/weathers.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/js/weather.js"></script>
+</body>
+</html>

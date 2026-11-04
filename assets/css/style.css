@@ -304,7 +304,7 @@ body.dark-mode .leaderboard th { background: #1a2556; }
 input.color-bar { width: 100%; height: 42px; min-height: 42px; padding: 3px; cursor: pointer; }
 
 /* Weather viewer */
-.weather-canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; border: 2px solid #000; border-radius: 5px; }
+.weather-canvas { display: block; width: 100%; height: auto; aspect-ratio: 960 / 603; background: #000; border: 2px solid #000; border-radius: 5px; }
 .weather-camera { display: flex; flex: 1 1 200px; align-items: center; gap: 10px; }
 .weather-camera input { flex: 1; min-height: 0; padding: 0; box-shadow: none; border: 0; accent-color: var(--save); }
 
@@ -474,4 +474,207 @@ body.dark-mode .promo-toast { background: #101a4a padding-box; }
 button.recipe-card:hover:not(:disabled) { background: rgb(255 255 255 / .12); }
 .recipe-card .item-tile { display: grid; place-items: center; }
 .recipe-name { overflow-wrap: anywhere; }
-.recipe-more { color: var(--link); font-size: .72rem; font-weight: 400; }
+.recipe-more { color: var(--link); font-size: .75rem; }
+
+/* Item Search filters and comparison */
+.item-filters { margin-bottom: 14px; }
+.item-filters summary { margin-bottom: 8px; font-weight: 700; cursor: pointer; }
+.filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 10px; }
+.filter-grid select, .filter-grid input { width: 100%; }
+.filter-grid [hidden] { display: none; }
+.rarity-range { min-width: 0; margin: 0; padding: 0; border: 0; }
+.rarity-range legend { padding: 0; font-size: .8rem; font-weight: 700; }
+.rarity-range div { display: flex; align-items: center; gap: 6px; }
+.rarity-range input { flex: 1; min-width: 0; }
+.compare-panel { margin-bottom: 14px; padding: 14px; background: rgb(0 0 0 / .22); border-radius: 8px; }
+.compare-panel h2 { margin: 0; }
+.compare-note { margin: 4px 0 0; font-size: .8rem; font-weight: 400; }
+.compare-scroll { overflow-x: auto; }
+#compare_table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+#compare_table th, #compare_table td { padding: 8px 12px; text-align: center; vertical-align: middle; }
+#compare_table tr > :first-child { position: sticky; left: 0; z-index: 1; width: 150px; text-align: left; font-weight: 400; background: #3f6f86; }
+.dark-mode #compare_table tr > :first-child { background: #101a3c; }
+#compare_table tbody tr, #compare_table tr + tr { border-top: 1px solid rgb(255 255 255 / .14); }
+#compare_table tr.is-different td { font-weight: 700; background: rgb(255 225 77 / .16); }
+#compare_table tr:first-child th { padding-top: 14px; min-width: 130px; vertical-align: top; }
+#compare_table .item-tile { display: grid; place-items: center; margin: 0 auto 6px; }
+.compare-name { display: block; font-size: .92rem; overflow-wrap: anywhere; }
+/* Sits on the frame's corner, clear of the 32x32 icon area */
+.compare-remove { position: absolute; top: -9px; right: -9px; z-index: 2; width: 20px; min-height: 0; height: 20px; padding: 0; background: transparent; border-radius: 0; box-shadow: none; }
+.compare-remove:hover:not(:disabled) { background: transparent; filter: brightness(1.2); }
+.compare-remove img { display: block; width: 100%; height: 100%; object-fit: contain; }
+/* The client's blue checkbox: two 32px cells, empty then ticked */
+.game-check { display: inline-block; width: 24px; height: 24px; vertical-align: middle; background: url("../img/checkbox_game.png") 0 0 / auto 24px no-repeat; image-rendering: pixelated; }
+.game-check.is-on { background-position: -24px 0; }
+a.game-btn { display: inline-flex; align-items: center; font-weight: 700; text-decoration: none; }
+a.game-btn[hidden] { display: none; }
+.recipe-uses h2 { margin: 14px 0 8px; font-size: 1.05rem; }
+.recipe-use-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.recipe-use-grid .recipe-card { width: 100%; }
+#recipe_scroll[hidden], .recipe-uses[hidden] { display: none; }
+
+/* Items.dat Archive */
+.archive-pick { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; }
+.archive-pick .field { flex: 1 1 220px; min-width: 0; }
+.archive-pick select { width: 100%; }
+#diff_list { display: block; column-gap: 12px; }
+.diff-row { break-inside: avoid; margin-bottom: 4px; background: var(--well); border-left: 5px solid #888; border-radius: 4px; }
+.diff-added { border-left-color: #4caf50; }
+.diff-changed { border-left-color: #ffb300; }
+.diff-removed { border-left-color: #e53935; }
+.diff-head { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; }
+summary.diff-head { cursor: pointer; }
+.diff-table { width: 100%; margin: 0 0 6px; border-collapse: collapse; }
+.diff-table th, .diff-table td { padding: 4px 12px; text-align: left; overflow-wrap: anywhere; border-top: 1px solid rgb(255 255 255 / .15); }
+.diff-table td:first-of-type { opacity: .75; text-decoration: line-through; }
+.archive-table { width: 100%; border-collapse: collapse; }
+.archive-table th, .archive-table td { padding: 6px 10px; text-align: left; border-bottom: 1px solid rgb(255 255 255 / .15); }
+#diff_panel[hidden] { display: none; }
+
+/* The Growtopian Archive */
+.clients-scroll { max-height: 75dvh; overflow: auto; }
+.clients-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.clients-table th, .clients-table td { padding: 5px 8px; text-align: center; border: 1px solid rgb(0 0 0 / .35); }
+.clients-table thead th { position: sticky; top: 0; z-index: 2; background: #1c5674; }
+.clients-table tbody th { position: sticky; left: 0; z-index: 1; background: #1c5674; }
+.client-cell a { display: block; color: #fff; font-size: .75rem; text-decoration: underline; }
+.client-cell span { overflow-wrap: anywhere; }
+.client-cell.is-found { background: #3f8f4a; }
+.client-cell.is-lost { background: #b9722a; }
+.client-cell.is-unsure { background: #a58b1f; }
+.client-cell.is-none, .client-cell.is-unknown { background: rgb(0 0 0 / .35); }
+.client-dot { display: inline-block; width: 14px; height: 14px; margin: 0 4px 0 12px; vertical-align: -2px; border-radius: 3px; }
+.client-dot.is-found { background: #3f8f4a; }
+.client-dot.is-lost { background: #b9722a; }
+.client-dot.is-unsure { background: #a58b1f; }
+.client-dot.is-none { background: #333; }
+.changelog-links { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.command-row { padding: 8px 10px; border-top: 1px solid rgb(255 255 255 / .18); }
+.command-row code { font-size: 1rem; font-weight: 700; }
+.command-row p { margin: 3px 0 0; font-size: .9rem; overflow-wrap: anywhere; }
+.command-usage { font-family: ui-monospace, Menlo, monospace; opacity: .9; }
+.wiki-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 14px; align-items: start; }
+.wiki-nav ul { max-height: 70dvh; margin: 10px 0 0; padding: 0; overflow: auto; list-style: none; }
+.wiki-nav li { padding: 3px 0; font-size: .9rem; }
+.wiki-nav [aria-current] { font-weight: 700; text-decoration: none; }
+.wiki-page { min-width: 0; overflow-x: auto; }
+.wiki-page img { max-width: 100%; height: auto; }
+.wiki-page table { border-collapse: collapse; }
+.wiki-page th, .wiki-page td { padding: 4px 8px; border: 1px solid rgb(255 255 255 / .25); }
+@media (max-width: 800px) { .wiki-layout { grid-template-columns: 1fr; } }
+
+/* Archive pages are for long reading: solid panels and plain text instead of the game look */
+.archive-page { --paper: #f5f8fa; --ink: #16252e; --muted: #51636e; --rule: #d3dde3; --accent: #0b63a5; }
+.dark-mode .archive-page { --paper: #121b33; --ink: #e9eef6; --muted: #a6b3c7; --rule: #2b3958; --accent: #7cc4ff; }
+.archive-page .box { color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; box-shadow: none; }
+.archive-page .box, .archive-page .box * { text-shadow: none; }
+.archive-page .box a { color: var(--accent); }
+.archive-page .box h2 { color: var(--ink); }
+.archive-page .box p, .archive-page .box li { line-height: 1.5; }
+.archive-page .field span, .archive-page .status-key { color: var(--muted); font-weight: 400; }
+.archive-page .tool-card p { color: var(--muted); }
+.archive-page .status-key { font-size: .9rem; }
+
+.archive-page .clients-table { font-size: .9rem; color: var(--ink); }
+.archive-page .clients-table th, .archive-page .clients-table td { padding: 7px 10px; border: 0; border-bottom: 1px solid var(--rule); font-weight: 400; }
+.archive-page .clients-table thead th, .archive-page .clients-table tbody th { color: var(--ink); font-weight: 700; background: var(--paper); }
+.archive-page .clients-table thead th { box-shadow: inset 0 -2px 0 var(--rule); }
+.archive-page .client-cell.is-none, .archive-page .client-cell.is-unknown { color: var(--muted); background: none; }
+.archive-page .client-cell.is-found { color: #fff; background: #2e7d3a; }
+.archive-page .client-cell.is-lost { color: #fff; background: #a85f14; }
+.archive-page .client-cell.is-unsure { color: #2b2300; background: #e6c84f; }
+.archive-page .clients-table .client-cell a { color: inherit; font-size: .8rem; }
+.archive-page .client-dot.is-none { background: var(--rule); }
+
+.archive-page #commands_list h2 { margin: 26px 0 6px; padding-bottom: 6px; font-size: 1.2rem; border-bottom: 2px solid var(--rule); }
+.archive-page .command-row { display: grid; grid-template-columns: minmax(130px, 220px) minmax(0, 1fr); column-gap: 18px; padding: 10px 4px; border-top: 0; border-bottom: 1px solid var(--rule); }
+.archive-page .command-row code { grid-row: 1 / span 3; font: 700 .95rem/1.5 ui-monospace, Menlo, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.archive-page .command-row p { grid-column: 2; margin: 0 0 4px; font-size: .95rem; }
+.archive-page .command-usage { padding: 3px 8px; font-size: .85rem; color: var(--ink); background: rgb(127 127 127 / .14); border-radius: 4px; }
+.archive-page .command-extra { color: var(--muted); }
+@media (max-width: 640px) { .archive-page .command-row { display: block; } }
+
+.archive-page .wiki-nav li { font-size: .95rem; }
+.archive-page .wiki-page { font-size: 1rem; line-height: 1.6; }
+.archive-page .wiki-page h2, .archive-page .wiki-page h3 { margin: 1.4em 0 .4em; line-height: 1.25; }
+.archive-page .wiki-page th, .archive-page .wiki-page td { border-color: var(--rule); }
+
+/* Client Archive version card */
+.version-layout { grid-template-columns: 190px minmax(0, 1fr); }
+.version-table-link { display: block; margin-top: 10px; font-weight: 700; }
+.version-layout .wiki-nav .field { margin-top: 8px; }
+.version-layout .wiki-nav select { width: 100%; }
+.version-card { padding: 22px 26px; color: #d3f0da; background: #3366cc; border-radius: 10px; }
+.version-card * { text-shadow: none; }
+.version-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.version-head img { width: 60px; height: 60px; object-fit: contain; image-rendering: pixelated; }
+.version-head h2 { margin: 0; color: #fff; font-size: 1.9rem; }
+.version-fact { margin: 6px 0; font-size: 1.02rem; }
+.version-fact strong { font-weight: 700; }
+.version-status { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.version-chip { padding: 2px 10px; font-size: .85rem; color: #fff; border-radius: 12px; }
+.version-chip.is-found { background: #3f8f4a; }
+.version-chip.is-lost { background: #c94a3a; }
+.version-chip.is-unsure { color: #2b2300; background: #efbc3c; }
+.version-notes { margin: 10px 0; }
+.version-notes summary { font-size: 1.05rem; font-weight: 700; cursor: pointer; }
+.version-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.version-tabs [aria-pressed="true"] { background: var(--save); }
+.version-notes-text { padding: 14px 18px; color: #fff; line-height: 1.55; white-space: pre-line; background: #24488f; border-radius: 8px; }
+.version-downloads { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; }
+.version-downloads a { display: block; }
+.version-downloads a:hover { filter: brightness(1.15); }
+.version-downloads img { display: block; width: 130px; height: 130px; object-fit: contain; }
+.side-tables .box { margin-top: 14px; }
+.archive-page .client-cell.is-lost { color: #fff; background: #c94a3a; }
+.archive-page .client-cell.is-unsure { color: #2b2300; background: #efbc3c; }
+.client-dot.is-lost { background: #c94a3a; }
+.client-dot.is-unsure { background: #efbc3c; }
+@media (max-width: 800px) { .version-layout { grid-template-columns: 1fr; } .version-layout .wiki-nav ul { max-height: 200px; } }
+.version-sprite { width: 28px; height: 28px; margin-right: 8px; vertical-align: middle; image-rendering: pixelated; }
+.version-platforms { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin: 12px 0; }
+.version-platform { padding: 10px 14px; background: #24488f; border-radius: 8px; }
+.version-platform h3 { margin: 0 0 6px; color: #fff; font-size: 1rem; }
+.version-platform .version-fact { margin: 3px 0; font-size: .92rem; overflow-wrap: anywhere; }
+.version-chip.is-listed { background: #7a4fc0; }
+.version-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-bottom: 14px; }
+.version-bar .search { flex: 1 1 240px; width: auto; }
+.version-bar .version-table-link { margin: 0 0 8px; }
+.version-bar #versions_count { margin-bottom: 8px; color: var(--muted); }
+.version-cards { display: grid; gap: 14px; }
+.version-card { scroll-margin-top: 12px; }
+#versions_more { height: 1px; }
+.version-chip.is-outside { background: #5b6b80; }
+.archive-page .client-cell.is-outside { color: var(--ink); background: rgb(127 127 127 / .28); }
+.client-dot.is-outside { background: #8d99a8; }
+.version-layout .wiki-nav { position: sticky; top: 10px; }
+.version-layout .wiki-nav ul { max-height: calc(100dvh - 90px); }
+.version-layout .wiki-nav [aria-current] { font-weight: 700; text-decoration: none; }
+@media (max-width: 800px) { .version-layout .wiki-nav { position: static; } }
+
+/* Status colours: found green, lost orange, might exist yellow, doesn't exist black */
+.version-chip.is-found, .archive-page .client-cell.is-found, .client-dot.is-found { color: #fff; background: #2e8b3d; }
+.version-chip.is-lost, .archive-page .client-cell.is-lost, .client-dot.is-lost { color: #fff; background: #e8780c; }
+.version-chip.is-unsure, .archive-page .client-cell.is-unsure, .client-dot.is-unsure { color: #2b2300; background: #f4d03f; }
+.version-chip.is-none, .archive-page .client-cell.is-none, .client-dot.is-none { color: #ddd; background: #111; }
+.version-skip { padding: 12px 18px; color: #fff; background: #24488f; border-radius: 10px; }
+.version-skip summary { font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+.version-skip .version-cards { margin-top: 12px; }
+.wiki-nav details summary { font-weight: 700; cursor: pointer; }
+.wiki-nav details ul { max-height: none; margin: 4px 0 0 12px; overflow: visible; }
+
+/* Weather background and anti-lag */
+.topbar-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.topbar-weather { display: flex; align-items: center; gap: 6px; font-size: .85rem; font-weight: 700; }
+.topbar-weather[hidden] { display: none; }
+.topbar-weather select { width: auto; max-width: 170px; min-height: 36px; padding: 4px 8px; font-size: .85rem; }
+.topbar-antilag { min-height: 36px; font-size: .85rem; }
+body.has-weather { background-position: center; background-size: cover; background-repeat: no-repeat; background-attachment: fixed; }
+body.has-weather .sun, body.has-weather .cloud { display: none; }
+body.anti-lag { background-image: none; background-attachment: scroll; }
+body.anti-lag .sun, body.anti-lag .cloud { display: none; }
+body.anti-lag *, body.anti-lag *::before, body.anti-lag *::after { box-shadow: none !important; text-shadow: none !important; transition: none !important; animation: none !important; filter: none !important; }
+
+/* Archive list on Extras: plain links */
+.archive-links { margin-top: 28px; }
+.archive-links h2 { margin: 0 0 10px; font-size: 1.5rem; }

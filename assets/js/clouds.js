@@ -5,8 +5,20 @@ clouds.forEach((cloud, index) => {
     resetCloud(cloud, window.innerWidth);
 });
 
+// Clouds wait while they're hidden, so anti-lag and weather backgrounds cost no frames
+const cloudsPaused = () => document.body.classList.contains('anti-lag') || document.body.classList.contains('has-weather');
+const waitingClouds = [];
+
+document.addEventListener('growkit-look', () => {
+    if (!cloudsPaused()) waitingClouds.splice(0).forEach((resume) => resume());
+});
+
 function moveCloud(cloud, speed) {
     function animate() {
+        if (cloudsPaused()) {
+            waitingClouds.push(animate);
+            return;
+        }
         let left = parseInt(cloud.style.left);
         left -= speed;
         cloud.style.left = left + 'px';

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client Table · GrowKit</title>
+<meta name="description" content="Every known Growtopia client version on every platform.">
+<link rel="icon" type="image/png" href="../assets/img/favicon_hd.png">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap wrap-wide page archive-page">
+<header class="page-head"><h1>Client Table</h1><p id="clients_info">Loading...</p></header>
+<section class="box">
+<div class="tool-row search-tools"><input class="search" id="clients_search" type="search" placeholder="Search a version, such as 2.99..." aria-label="Search versions">
+<label class="field"><span>Platform</span><select id="clients_platform"><option value="">All</option></select></label>
+<label class="field"><span>Status</span><select id="clients_status"><option value="">Any</option><option value="found">Found</option><option value="lost">Lost</option><option value="unsure">Might Exist</option><option value="none">Doesn't Exist</option></select></label></div>
+<p class="status-key"><span class="client-dot is-found"></span>Found <span class="client-dot is-lost"></span>Lost <span class="client-dot is-unsure"></span>Might Exist <span class="client-dot is-none"></span>Doesn't Exist <span class="client-dot is-outside"></span>Steam/Ubisoft Connect: not in archiving project</p>
+<p><a href="clients.html">Back to versions</a></p>
+<div class="clients-scroll"><table class="clients-table"><thead id="clients_head"></thead><tbody id="clients_rows"></tbody></table></div>
+<p id="clients_count"></p>
+</section>
+<div id="side_tables" class="side-tables"></div>
+</main>
+<script src="../assets/js/weathers.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/clouds.js"></script>
+<script src="../assets/js/archive-clients.js"></script>
+</body>
+</html>

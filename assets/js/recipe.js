@@ -5,11 +5,15 @@ const treeRoot = document.getElementById("recipe_tree");
 const stage = document.getElementById("recipe_stage");
 const lines = document.getElementById("recipe_lines");
 const SEED_ACTION = 19;
-const FIRST_VIEW_NODES = 120; // recipes can reach hundreds of nodes, so the rest open on click
+const MAX_LAYERS = 3; // deeper layers open on click; otherwise Dirt alone would list almost every recipe
+const USES_PER_LAYER = 200;
 const SVG_NS = "http://www.w3.org/2000/svg";
 let byId = new Map();
 let byName = new Map();
 let root = null;
+let currentId = null;
+let mode = "make";
+const usedIn = new Map();
 
 function ingredientsOf(id) {
   const seed = byId.get(id + 1);
@@ -29,16 +33,78 @@ function openNode(node) {
   node.open = true;
 }
 
-function openWidthFirst(start, budget) {
-  const queue = [start];
-  let used = 1;
-  while (queue.length) {
-    const node = queue.shift();
-    if (!node.parts.length || used + node.parts.length > budget) continue;
-    openNode(node);
-    used += node.kids.length;
-    queue.push(...node.kids);
+function openLayers(node, layers) {
+  if (!layers || !node.parts.length) return;
+  openNode(node);
+  node.kids.forEach((kid) => openLayers(kid, layers - 1));
+}
+
+// Items within MAX_LAYERS of this one, each listed once at its closest layer
+function usesByLayer(id) {
+  const seen = new Set([id]);
+  const layers = [];
+  let current = [id];
+  for (let layer = 0; layer < MAX_LAYERS && current.length; layer++) {
+    const next = [];
+    for (const part of current) {
+      for (const user of usedIn.get(part) || []) {
+        if (seen.has(user)) continue;
+        seen.add(user);
+        next.push(user);
+      }
+    }
+    layers.push(next);
+    current = next;
   }
+  return layers;
+}
+
+function usesCard(id) {
+  const item = byId.get(id);
+  const card = document.createElement("button");
+  card.type = "button";
+  card.className = "recipe-card";
+  card.addEventListener("click", () => {
+    searchBox.value = item.name;
+    showItem(id, "make");
+  });
+  const tile = document.createElement("span");
+  tile.className = `item-tile${ItemIcons.boxClass(item)}`;
+  const icon = document.createElement("canvas");
+  icon.className = "item-icon item-icon-fill";
+  ItemIcons.render(item).then((layer) => {
+    icon.width = icon.height = 32;
+    icon.getContext("2d").drawImage(layer, 0, 0);
+  });
+  tile.append(icon);
+  const name = document.createElement("span");
+  name.className = "recipe-name";
+  name.textContent = item.name;
+  card.append(tile, name);
+  return card;
+}
+
+function renderUses(id) {
+  const box = document.getElementById("recipe_uses");
+  const layers = usesByLayer(id);
+  const total = layers.reduce((sum, list) => sum + list.length, 0);
+  statusLine.textContent = total ? `${total} items use ${byId.get(id).name} within ${MAX_LAYERS} layers of their recipe. Click one to see how it's made.` : `Nothing uses ${byId.get(id).name} in its recipe.`;
+  box.replaceChildren(...layers.filter((list) => list.length).map((list) => {
+    const section = document.createElement("section");
+    const title = document.createElement("h2");
+    const number = layers.indexOf(list) + 1;
+    title.textContent = `${number === 1 ? "Direct ingredient" : `Layer ${number}`} (${list.length})`;
+    const grid = document.createElement("div");
+    grid.className = "recipe-use-grid";
+    grid.append(...list.slice(0, USES_PER_LAYER).map(usesCard));
+    section.append(title, grid);
+    if (list.length > USES_PER_LAYER) {
+      const note = document.createElement("p");
+      note.textContent = `Showing the first ${USES_PER_LAYER}.`;
+      section.append(note);
+    }
+    return section;
+  }));
 }
 
 function nodeElement(node) {
@@ -69,13 +135,16 @@ function nodeElement(node) {
   name.className = "recipe-name";
   name.textContent = item.name;
   card.append(tile, name);
-  if (node.parts.length && !node.open) {
-    const more = document.createElement("span");
-    more.className = "recipe-more";
-    more.textContent = "+ Show recipe";
-    card.append(more);
-  }
   wrap.append(card);
+  if (node.parts.length && !node.open) {
+    const more = document.createElement("a");
+    more.className = "recipe-more";
+    more.href = `recipe.html#${node.id}`;
+    more.target = "_blank";
+    more.rel = "noopener";
+    more.textContent = "+ Show recipe";
+    wrap.append(more);
+  }
   if (node.open) {
     const kids = document.createElement("div");
     kids.className = "recipe-kids";
@@ -114,17 +183,22 @@ function render() {
   drawLines();
 }
 
-function openAll(node) {
-  if (!node.parts.length) return;
-  openNode(node);
-  node.kids.forEach(openAll);
-}
-
-function showItem(id) {
+function showItem(id, nextMode = mode) {
   const item = byId.get(id);
+  currentId = id;
+  mode = nextMode;
+  document.getElementById("mode_make").setAttribute("aria-pressed", mode === "make");
+  document.getElementById("mode_uses").setAttribute("aria-pressed", mode === "uses");
+  document.getElementById("recipe_scroll").hidden = mode !== "make";
+  document.getElementById("recipe_uses").hidden = mode !== "uses";
+  if (mode === "uses") {
+    renderUses(id);
+    history.replaceState(null, "", `#uses-${id}`);
+    return;
+  }
   root = makeNode(id, []);
-  openWidthFirst(root, FIRST_VIEW_NODES);
-  statusLine.textContent = root.parts.length ? `Recipe for ${item.name}. Click an item to open or close its part of the tree.` : `${item.name} has no splice recipe in items.dat.`;
+  openLayers(root, MAX_LAYERS);
+  statusLine.textContent = root.parts.length ? `Recipe for ${item.name}, ${MAX_LAYERS} layers deep. Click an item to open or close its part of the tree.` : `${item.name} has no splice recipe in items.dat.`;
   render();
   history.replaceState(null, "", `#${id}`);
 }
@@ -146,16 +220,11 @@ searchBox.addEventListener("change", () => {
   if (id !== null) showItem(id);
   else if (searchBox.value.trim()) statusLine.textContent = `No item called "${searchBox.value.trim()}".`;
 });
-document.getElementById("recipe_expand").addEventListener("click", () => {
-  if (!root) return;
-  openAll(root);
-  render();
+document.getElementById("mode_make").addEventListener("click", () => {
+  if (currentId !== null) showItem(currentId, "make");
 });
-document.getElementById("recipe_collapse").addEventListener("click", () => {
-  if (!root) return;
-  root = makeNode(root.id, []);
-  if (root.parts.length) openNode(root);
-  render();
+document.getElementById("mode_uses").addEventListener("click", () => {
+  if (currentId !== null) showItem(currentId, "uses");
 });
 new ResizeObserver(drawLines).observe(treeRoot);
 
@@ -168,11 +237,18 @@ window.onItemsDecoded = (data) => {
   const withRecipe = blocks.filter((item) => ingredientsOf(item.item_id).length);
   document.getElementById("recipe_names").replaceChildren(...withRecipe.map((item) => new Option(item.name)));
   document.getElementById("recipe_info").textContent = `${withRecipe.length} splice recipes from the latest items.dat (version ${data.version}).`;
-  const start = Number(location.hash.slice(1));
-  const first = byId.has(start) && location.hash ? start : byName.get("pickaxe");
+  for (const item of withRecipe) {
+    for (const part of ingredientsOf(item.item_id)) {
+      if (!usedIn.has(part)) usedIn.set(part, []);
+      usedIn.get(part).push(item.item_id);
+    }
+  }
+  const hash = location.hash.match(/^#(uses-)?(\d+)$/);
+  const start = hash && Number(hash[2]);
+  const first = byId.has(start) ? start : byName.get("pickaxe");
   if (first !== undefined) {
     searchBox.value = byId.get(first).name;
-    showItem(first);
+    showItem(first, hash && hash[1] ? "uses" : "make");
   }
 };
 

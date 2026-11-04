@@ -13,12 +13,14 @@
 <header class="page-head"><h1>Recipe Tree</h1><p id="recipe_info">Loading items...</p></header>
 <section class="box">
 <div class="tool-row search-tools"><input class="search" id="recipe_search" type="search" list="recipe_names" placeholder="Item name or ID..." aria-label="Find an item"><datalist id="recipe_names"></datalist>
-<button type="button" class="btn-sm" id="recipe_expand">Expand all</button><button type="button" class="btn-sm" id="recipe_collapse">Collapse all</button></div>
+<div class="edit-mode" role="group" aria-label="Recipe view"><button type="button" class="btn-sm" id="mode_make" aria-pressed="true">How to make</button><button type="button" class="btn-sm" id="mode_uses" aria-pressed="false">Made with it</button></div></div>
 <p id="recipe_status" role="status"></p>
-<div class="recipe-scroll"><div class="recipe-stage" id="recipe_stage"><svg class="recipe-lines" id="recipe_lines" aria-hidden="true"></svg><div id="recipe_tree"></div></div></div>
+<div id="recipe_uses" class="recipe-uses" hidden></div>
+<div class="recipe-scroll" id="recipe_scroll"><div class="recipe-stage" id="recipe_stage"><svg class="recipe-lines" id="recipe_lines" aria-hidden="true"></svg><div id="recipe_tree"></div></div></div>
 </section>
 <input type="checkbox" id="using_txt_mode" hidden>
 </main>
+<script src="assets/js/weathers.js"></script>
 <script src="assets/js/common.js"></script>
 <script src="assets/js/clouds.js"></script>
 <script src="assets/vendor/pako.min.js"></script>
