@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GrowQuiz · GrowKit</title>
+<meta name="description" content="A Growtopia item game show: solve item names letter by letter, or guess them from a piece of their sprite.">
+<link rel="icon" type="image/png" href="assets/img/favicon_hd.png">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/quiz.css">
+</head>
+<body class="show-page">
+<main id="main" class="wrap page show">
+
+<header class="show-marquee">
+<span class="show-bulbs" aria-hidden="true"></span>
+<p class="show-kicker">GrowKit presents</p>
+<h1 class="show-title">GROWQUIZ</h1>
+<p id="quiz_info" class="show-sub">Loading items...</p>
+</header>
+
+<div class="show-podiums" role="group" aria-label="Game">
+<button type="button" class="podium" data-mode="hangman" aria-pressed="true"><span class="podium-num">1</span><span class="podium-name">Name Board</span><span class="podium-text">Solve the name letter by letter, with hints</span></button>
+<button type="button" class="podium" data-mode="sprite" aria-pressed="false"><span class="podium-num">2</span><span class="podium-name">Sprite Zoom</span><span class="podium-text">Guess the item from a piece of its icon</span></button>
+</div>
+
+<section class="show-stage" aria-live="polite">
+<div class="scoreboard">
+<div class="score-cell"><span class="score-label">Score</span><span id="score" class="score-value">0</span></div>
+<div class="score-cell score-lives"><span class="score-label">Lives</span><span id="lives" class="score-value">7</span><span id="hearts" class="hearts" aria-hidden="true"></span></div>
+<div class="score-cell"><span class="score-label">Best</span><span id="best" class="score-value">0</span></div>
+</div>
+
+<div id="hints" class="hint-wall" hidden></div>
+<div id="clue" class="sprite-screen" hidden></div>
+<div id="word" class="name-board" hidden></div>
+<p id="feedback" class="show-feedback"></p>
+<div id="keys" class="show-keys" hidden></div>
+
+<div class="show-actions">
+<form id="guess_form" class="solve-form">
+<input class="search" id="guess" list="item_names" autocomplete="off" placeholder="Solve: type the full item name..." aria-label="Your guess">
+<datalist id="item_names"></datalist>
+<button type="submit" class="show-btn show-btn-go">Solve</button>
+</form>
+<button type="button" class="show-btn show-btn-hint" id="buy_hint">Open a hint <small>(1 life)</small></button>
+<button type="button" class="show-btn show-btn-quit" id="give_up">Give up</button>
+</div>
+
+<div id="answer" class="reveal" hidden><canvas id="answer_icon" class="reveal-icon"></canvas><div><p class="reveal-label" id="answer_label">The answer was</p><h2 id="answer_name"></h2><p id="answer_desc"></p></div></div>
+<button type="button" class="show-btn show-btn-go show-next" id="next" hidden>Next item</button>
+<button type="button" class="show-btn show-btn-go show-next" id="restart" hidden>New game</button>
+</section>
+
+<details class="show-studio">
+<summary>Studio settings</summary>
+<p id="mode_help" class="studio-help"></p>
+<div class="filter-grid studio-filters">
+<label class="field"><span>Block type</span><select id="quiz_type"><option value="">Any</option></select></label>
+<label class="field" id="quiz_part_wrap" hidden><span>Body Part</span><select id="quiz_part"><option value="">Any</option></select></label>
+<label class="field"><span>Property</span><select id="quiz_property"><option value="">Any</option><option value="recipe">Has a splice recipe</option><option value="norecipe">No splice recipe</option><option value="untradeable">Untradeable</option><option value="seedless">Never drops seeds</option><option value="permanent">Can't be destroyed</option><option value="flippable">Flippable</option><option value="editable">Wrench settings</option><option value="public">Public</option><option value="worldLocked">World-Locked only</option></select></label>
+</div>
+<label class="check"><input type="checkbox" id="quiz_dev"> <span>Include items with the Mod and Beta category flags</span></label>
+<p id="pool_info" class="studio-help"></p>
+</details>
+</main>
+<input type="checkbox" id="using_txt_mode" hidden>
+
+<dialog id="dev_confirm" class="item-modal" aria-labelledby="dev_title"><div class="item-about">
+<h2 id="dev_title">Are you sure?</h2>
+<p class="about-text">This setting will include developer blocks and icons in your quiz that you may never have seen in Growtopia.</p>
+<div class="about-actions"><button type="button" class="game-btn" id="dev_yes">Yes, include them</button><button type="button" class="game-btn" id="dev_no">Cancel</button></div>
+</div></dialog>
+
+<script src="assets/js/weathers.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/clouds.js"></script>
+<script src="assets/vendor/pako.min.js"></script>
+<script src="assets/js/rt-format.js"></script>
+<script src="assets/js/action-types.js"></script>
+<script src="assets/js/item-icons.js"></script>
+<script src="assets/js/items-codec.js"></script>
+<script src="assets/js/item-quiz.js"></script>
+</body>
+</html>

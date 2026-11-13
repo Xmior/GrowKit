@@ -110,6 +110,8 @@ async function openItem(item) {
   const recipe = field("about_recipe");
   recipe.hidden = !recipeOf(item);
   recipe.href = `recipe.html#${item.action_type === ACTION.seed ? item.item_id - 1 : item.item_id}`;
+  // growtopiawiki.com keeps one page per item, seeds included, at /w/Item_Name
+  document.getElementById("about_wiki").href = `https://growtopiawiki.com/w/${encodeURIComponent(item.name.replaceAll(" ", "_"))}`;
   modal.showModal();
 }
 
@@ -191,6 +193,25 @@ async function spriteParts(item) {
     ItemIcons.dinoCells(item).cells.forEach(([x, y], i) => {
       parts.push({ label: names[i], source: sheet, sx: x * TILE, sy: y * TILE, file: names[i].toLowerCase().replace(" ", "_") });
     });
+    return parts;
+  }
+  // Playful Sprites point at an empty face cell; the client draws them from plaspr.rttex, tinted by the seed
+  if (/plaspr\.rttex$/i.test(item.extra_file || "")) {
+    const sheet = await ItemIcons.loadSheet("assets/game/plaspr.png");
+    const seed = all.find((other) => other.item_id === item.item_id + 1);
+    if (!sheet || !seed) return parts;
+    const strip = document.createElement("canvas");
+    strip.width = sheet.width;
+    strip.height = sheet.height;
+    const g = strip.getContext("2d");
+    const { r, g: green, b } = seed.seed_color;
+    g.drawImage(sheet, 0, 0);
+    g.globalCompositeOperation = "multiply";
+    g.fillStyle = `rgb(${r},${green},${b})`;
+    g.fillRect(0, 0, strip.width, strip.height);
+    g.globalCompositeOperation = "destination-in";
+    g.drawImage(sheet, 0, 0);
+    for (let x = 1; x < sheet.width / TILE; x++) parts.push({ label: `Frame ${x}`, source: strip, sx: x * TILE, sy: 0, file: `frame_${x}` });
     return parts;
   }
   const map = await sheetMap(item.texture);
@@ -301,7 +322,7 @@ document.getElementById("about_sprites").addEventListener("click", async (event)
   parts = await spriteParts(current);
   spriteRows.replaceChildren(...parts.map(spriteRow));
   refreshSprites();
-  pickerMap = current.action_type === 19 || ItemIcons.isDino(current) ? null : await sheetMap(current.texture);
+  pickerMap = current.action_type === 19 || ItemIcons.isDino(current) || /plaspr\.rttex$/i.test(current.extra_file || "") ? null : await sheetMap(current.texture);
   document.getElementById("sprite_picker_wrap").hidden = !pickerMap;
   if (pickerMap) drawPicker();
 });
@@ -661,6 +682,11 @@ window.onItemsDecoded = (data) => {
   byId = new Map(all.map((item) => [item.item_id, item]));
   ItemIcons.setLookup((id) => byId.get(id));
   document.getElementById("search_info").textContent = `${all.length} items from the latest items.dat (version ${data.version}). Click an item to open it.`;
+  fetch("assets/data/items-meta.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((meta) => {
+    if (!meta?.updated) return;
+    const date = new Date(`${meta.updated}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    document.getElementById("search_info").textContent = `${all.length} items from the latest items.dat (version ${data.version}), added on ${date}. Click an item to open it.`;
+  }).catch(() => {});
   const types = [...new Set(all.map((item) => item.action_type))].filter((type) => ACTION_TYPES[type]);
   types.sort((a, b) => ACTION_TYPES[a].localeCompare(ACTION_TYPES[b]));
   field("filter_type").append(...types.map((type) => new Option(ACTION_TYPES[type], type)));

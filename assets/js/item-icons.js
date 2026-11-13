@@ -74,6 +74,7 @@ const ItemIcons = (() => {
   const GUILD_PATTERNS = { "(Filigree)": 4, "(Harlequin)": 6, "(Plaid)": 8, "(Cross)": 10, "(Slant)": 12, "(Panel)": 14, "(Stripe)": 16, "(Flame)": 18, "(Division)": 20 };
   const NOT_DRAWN_AS_SEEDS = new Set([611, 4455]);
   let findItem = () => null;
+  const ICON_SHEETS = new Set(["bf_begchmp", "comhr", "d_aura", "es_egchmp", "io_rif", "io_rif_wing", "player_chestitem2", "player_chestitem", "player_cosmetics1", "player_cosmetics2", "player_cosmetics3", "player_cosmetics4", "player_faceitem5", "player_faceitem6", "player_faceitem7", "player_feet10", "player_feet11", "player_feet12", "player_feet13", "player_feet14", "player_feet15", "player_feet16", "player_feet2", "player_feet3", "player_feet4", "player_feet5", "player_feet6", "player_feet7", "player_feet8", "player_feet9", "player_feet", "player_feet_monthly1", "player_hair3", "player_hair4", "player_hair5", "player_hair_monthly1", "player_handitem2", "player_handitem3", "player_handitem4", "player_handitem5", "player_handitem6", "player_handitem7", "player_handitem", "player_hater", "player_longhanditem1", "player_longhanditem2", "player_longhanditem3", "player_longhanditem4", "player_pants2", "player_pants3", "player_pants_monthly1", "player_shirt3", "player_shirt4", "player_shirt_monthly1", "st_caura"]);
 
   function drawCell(ctx, sheet, x, y, color) {
     if ((x + 1) * TILE > sheet.width || (y + 1) * TILE > sheet.height) return;
@@ -127,7 +128,9 @@ const ItemIcons = (() => {
 
   // Dinosaur pets have a placeholder cell in items.dat. The client's PetRenderer::RenderDinoIcon
   // builds them from petleo.rttex: every ID picks a body and a head, tinted from the seed.
-  const DINO = { first: 3952, last: 4078, scale: 0.75, x: 2, y: 8, headX: [6, 12, 8, 7], headY: [-14, -23, -22, -9], headDrop: 16 };
+  // Head offsets by body are the client's; drawn at full size with the body on the bottom edge,
+  // this matches every dino icon on growtopiawiki.com pixel for pixel.
+  const DINO = { first: 3952, last: 4078, headX: [6, 12, 8, 7], headY: [-14, -23, -22, -9], headDrop: 16 };
   const isDino = (item) => {
     const id = Number(item.item_id);
     return id >= DINO.first && id <= DINO.last && id % 2 === 0 && Number(item.action_type) === 20;
@@ -139,21 +142,36 @@ const ItemIcons = (() => {
     const body = index % 4;
     const head = Math.floor(index / 4) % 4;
     const frame = body === 0 ? 1 : 0;
-    return { body, cells: [[frame, body], [frame + 3, body], [6, head], [7, head]] };
+    return { body, head, cells: [[frame, body], [frame + 3, body], [6, head], [7, head]] };
   }
 
   function drawDino(ctx, sheet, item, color) {
     const { body, cells } = dinoCells(item);
-    const size = TILE * DINO.scale;
-    const headX = DINO.x + DINO.headX[body] * DINO.scale;
-    const headY = DINO.y + (DINO.headY[body] + DINO.headDrop) * DINO.scale;
-    const places = [[DINO.x, DINO.y], [DINO.x, DINO.y], [headX, headY], [headX, headY]];
+    const PAD = 16;
+    const big = document.createElement("canvas");
+    big.width = big.height = TILE + PAD * 2;
+    const g = big.getContext("2d");
+    const hx = DINO.headX[body];
+    const hy = DINO.headY[body] + DINO.headDrop;
+    const places = [[0, 0], [0, 0], [hx, hy], [hx, hy]];
     cells.forEach(([x, y], i) => {
       const layer = document.createElement("canvas");
       layer.width = layer.height = TILE;
       drawCell(layer.getContext("2d"), sheet, x, y, i % 2 ? null : color);
-      ctx.drawImage(layer, places[i][0], places[i][1], size, size);
+      g.drawImage(layer, PAD + places[i][0], PAD + places[i][1]);
     });
+    // A head that sticks out over the top shrinks the whole pet to fit
+    let top = PAD;
+    try {
+      const d = g.getImageData(0, 0, big.width, big.height).data;
+      for (let i = 3; i < d.length && top === PAD; i += 4) if (d[i]) top = Math.min(PAD, Math.floor(i / 4 / big.width));
+    } catch { /* file:// */ }
+    const bottom = PAD + TILE;
+    const left = PAD;
+    const size = bottom - top;
+    const scale = TILE / size;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(big, left, bottom - size, size, size, 0, 0, size * scale, size * scale);
   }
 
   async function drawItem(ctx, item) {
@@ -170,7 +188,10 @@ const ItemIcons = (() => {
       const seeds = await loadSheet("assets/game/seed.png");
       if (!seeds) return drawEmpty(ctx, empty);
       drawTinted(ctx, seeds, Number(item.seed_base), 0, item.seed_color);
+      // The overlay is blended at 60% over the base: every seed icon on growtopiawiki.com matches this
+      ctx.globalAlpha = 0.6;
       drawTinted(ctx, seeds, Number(item.seed_overlay), 1, item.seed_overlay_color);
+      ctx.globalAlpha = 1;
       return;
     }
     const seed = findItem(id + 1);
@@ -181,9 +202,11 @@ const ItemIcons = (() => {
       drawCell(ctx, roots, Number(seed.seed_overlay), 1, seed.seed_overlay_color);
       return;
     }
-    // A texture's _icon sheet always wins over the texture itself
+    // A texture's _icon sheet always wins over the texture itself. Only these textures have one
+    // (tiles_page sheets never do), so nothing else is requested.
     const texture = String(item.texture);
-    const sheet = (await loadSheet(sheetPath(texture.replace(/\.rttex$/i, "_icon.rttex")))) || (await loadSheet(sheetPath(texture)));
+    const base = texture.replace(/\.rttex$/i, "");
+    const sheet = (ICON_SHEETS.has(base) && (await loadSheet(sheetPath(`${base}_icon.rttex`)))) || (await loadSheet(sheetPath(texture)));
     let [x, y] = ICON_CELLS[id] || iconCell(item);
     if (sheet && sheet.width === TILE && sheet.height === TILE) x = y = 0; // single-icon sheet
     if (!sheet || (x + 1) * TILE > sheet.width || (y + 1) * TILE > sheet.height) return drawEmpty(ctx, empty);
