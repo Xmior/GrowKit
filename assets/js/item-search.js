@@ -677,10 +677,22 @@ const picture = (path) => new Promise((resolve) => {
   image.src = path;
 });
 
+// search.html?archive=<file> searches an archived items.dat instead of the latest one
+const archiveFile = new URLSearchParams(location.search).get("archive");
+let archiveEntry = null;
+
 window.onItemsDecoded = (data) => {
   all = data.items.filter((item) => item.name);
   byId = new Map(all.map((item) => [item.item_id, item]));
   ItemIcons.setLookup((id) => byId.get(id));
+  if (archiveEntry) {
+    document.getElementById("search_info").textContent = `${all.length} items from the archived items.dat "${archiveEntry.label}" (version ${data.version}). Click an item to open it.`;
+    const types = [...new Set(all.map((item) => item.action_type))].filter((type) => ACTION_TYPES[type]);
+    types.sort((a, b) => ACTION_TYPES[a].localeCompare(ACTION_TYPES[b]));
+    field("filter_type").append(...types.map((type) => new Option(ACTION_TYPES[type], type)));
+    applyFilter();
+    return;
+  }
   document.getElementById("search_info").textContent = `${all.length} items from the latest items.dat (version ${data.version}). Click an item to open it.`;
   fetch("assets/data/items-meta.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((meta) => {
     if (!meta?.updated) return;
@@ -693,6 +705,16 @@ window.onItemsDecoded = (data) => {
   applyFilter();
 };
 
+async function archiveBlob(file) {
+  const manifest = await fetch("assets/data/archive.json").then((r) => r.json());
+  archiveEntry = manifest.find((entry) => entry.file === file);
+  if (!archiveEntry) throw new Error("that archived items.dat is not in the archive.");
+  const response = await fetch(`assets/data/archive/${archiveEntry.file}`);
+  if (!response.ok) throw new Error(`${archiveEntry.name} was not found.`);
+  document.querySelector(".page-head h1").textContent = `Item Search · ${archiveEntry.label}`;
+  return new Blob([pako.ungzip(new Uint8Array(await response.arrayBuffer()))]);
+}
+
 (async () => {
   try {
     button = await picture("assets/img/gui_box_upwhite.png");
@@ -702,7 +724,7 @@ window.onItemsDecoded = (data) => {
     const [elementData, petData, dat] = await Promise.all([
       fetch("assets/data/elements.json").then((r) => (r.ok ? r.json() : {})),
       fetch("assets/data/pet-sheets.json").then((r) => (r.ok ? r.json() : {})),
-      fetch("assets/data/items.dat").then((r) => { if (!r.ok) throw new Error("items.dat was not found."); return r.blob(); }),
+      archiveFile ? archiveBlob(archiveFile) : fetch("assets/data/items.dat").then((r) => { if (!r.ok) throw new Error("items.dat was not found."); return r.blob(); }),
     ]);
     elements = elementData;
     petSheets = petData;

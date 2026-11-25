@@ -11,6 +11,26 @@ const FIELDS = [
   ["seed_color", "Seed colour"], ["seed_overlay_color", "Seed overlay colour"], ["seed_base", "Seed shape"],
   ["seed_overlay", "Seed overlay"], ["tree_base", "Tree trunk"], ["tree_leaves", "Tree leaves"],
 ];
+// "Meaning (number)" for numbers that stand for something
+function described(key, value) {
+  if (value === undefined || value === null || value === "") return value;
+  if (key === "rarity" && Number(value) === 999) return "No rarity (999)";
+  if (FLAGS[key]) {
+    const names = FLAGS[key].filter((_, bit) => Number(value) & (1 << bit));
+    return `${names.length ? names.join(", ") : "None"} (${value})`;
+  }
+  const name = ENUMS[key]?.[value];
+  return name ? `${name} (${value})` : value;
+}
+// What each Changed filter looks for in an item's list of changes
+const FILTERS = {
+  name: ["Name"], desc: ["Description"], rarity: ["Rarity"],
+  texture: ["Texture", "Texture X", "Texture Y"],
+  seed: ["Seed: Seed colour", "Seed: Seed overlay colour"],
+};
+const filter = document.getElementById("diff_filter");
+const filterWrap = document.getElementById("diff_filter_wrap");
+const SEED_FIELDS = new Set(["Seed colour", "Seed overlay colour", "Seed shape", "Seed overlay", "Tree trunk", "Tree leaves", "Grow time"]);
 // Colours come decoded as {a, r, g, b}; they are compared and shown as #RRGGBB
 const asHex = (value) => value && typeof value === "object"
   ? `#${[value.r, value.g, value.b].map((n) => Number(n).toString(16).padStart(2, "0")).join("").toUpperCase()}`
@@ -24,7 +44,7 @@ const search = document.getElementById("diff_search");
 const decoded = new Map();
 let versions = [];
 let latestById = new Map();
-let diff = { added: [], changed: [], removed: [] };
+let diff = { added: [], changed: [], nulls: [] };
 let kind = "added";
 let page = 0;
 
@@ -64,7 +84,7 @@ function changesOf(oldItem, newItem) {
     if (before === undefined || after === undefined || before === after) continue;
     // Newer formats add fields that older files can only leave empty
     if (key === "str_version_22" && !before) continue;
-    out.push({ label, before, after });
+    out.push({ label, before: described(key, before), after: described(key, after) });
   }
   return out;
 }
@@ -72,7 +92,7 @@ function changesOf(oldItem, newItem) {
 function buildDiff(oldData, newData) {
   const oldById = new Map(oldData.items.map((item) => [item.item_id, item]));
   const newById = new Map(newData.items.map((item) => [item.item_id, item]));
-  const result = { added: [], changed: [], removed: [] };
+  const result = { added: [], changed: [], nulls: [] };
   const isSeed = (item) => item.action_type === SEED_ACTION;
   const changedById = new Map();
   for (const item of newData.items) {
@@ -83,6 +103,8 @@ function buildDiff(oldData, newData) {
     } else {
       const changes = changesOf(previous, item);
       const entry = { item, changes };
+      // A sprite that moved is drawn from its old cell and its new one
+      if (changes.some((change) => /^Texture/.test(change.label))) entry.sprite = { before: previous, after: item };
       changedById.set(item.item_id, entry);
       if (changes.length) result.changed.push(entry);
     }
@@ -92,20 +114,23 @@ function buildDiff(oldData, newData) {
     const previous = oldById.get(seed.item_id);
     const entry = changedById.get(seed.item_id - 1);
     if (!isSeed(seed) || !previous || !entry) continue;
-    const changes = changesOf(previous, seed).filter((change) => change.label !== "Name");
+    // A seed copies its block's other fields, so only what is its own is listed
+    const changes = changesOf(previous, seed).filter((change) => SEED_FIELDS.has(change.label));
     if (!changes.length) continue;
-    entry.seed = { before: previous, after: seed };
+    // Only a change to how the seed looks gets the two seeds drawn
+    if (changes.some((change) => change.label !== "Grow time")) entry.seed = { before: previous, after: seed };
     entry.changes.push(...changes.map((change) => ({ ...change, label: `Seed: ${change.label}` })));
     if (!result.changed.includes(entry)) result.changed.push(entry);
   }
   result.changed.sort((a, b) => a.item.item_id - b.item.item_id);
-  for (const item of oldData.items) {
-    if (!isSeed(item) && !newById.has(item.item_id)) result.removed.push({ item });
-  }
+  // Placeholders that later became real items get their own list instead of crowding Changed
+  const isNull = (item) => /^null_item/i.test(String(item.name));
+  result.nulls = result.changed.filter(({ item }) => isNull(oldById.get(item.item_id)) && !isNull(item));
+  result.changed = result.changed.filter((entry) => !result.nulls.includes(entry));
   return result;
 }
 
-function row({ item, changes, seed }) {
+function row({ item, changes, seed, sprite }) {
   const wrap = document.createElement(changes ? "details" : "div");
   wrap.className = `diff-row diff-${kind}`;
   const head = document.createElement(changes ? "summary" : "div");
@@ -141,14 +166,15 @@ function row({ item, changes, seed }) {
         cell.append(value);
       }
     }
-    if (seed) {
-      // Old and new seed drawn from their own colours
+    for (const [title, pair] of [["Sprite", sprite], ["Seed", seed]]) {
+      if (!pair) continue;
+      // Old and new drawn side by side, each from its own fields
       const line = table.insertRow();
       const label = document.createElement("th");
       label.scope = "row";
-      label.textContent = "Seed";
+      label.textContent = title;
       line.append(label);
-      for (const version of [seed.before, seed.after]) {
+      for (const version of [pair.before, pair.after]) {
         const canvas = document.createElement("canvas");
         canvas.className = "item-icon";
         ItemIcons.draw(canvas, version);
@@ -162,7 +188,10 @@ function row({ item, changes, seed }) {
 
 function renderDiff() {
   const query = search.value.trim().toLowerCase();
-  const rows = diff[kind].filter(({ item }) => {
+  const only = FILTERS[filter.value];
+  filterWrap.hidden = kind === "added";
+  const rows = diff[kind].filter(({ item, changes }) => {
+    if (only && kind !== "added" && !changes.some((change) => only.includes(change.label))) return false;
     return !query || String(item.item_id) === query || String(item.name).toLowerCase().includes(query);
   });
   // Wide screens show the next rows beside these instead of on another page
@@ -175,10 +204,10 @@ function renderDiff() {
   document.getElementById("diff_info").textContent = `${page + 1} / ${pages} · ${rows.length} items`;
   document.getElementById("diff_prev").disabled = page === 0;
   document.getElementById("diff_next").disabled = page >= pages - 1;
-  for (const name of ["added", "changed", "removed"]) {
+  for (const name of ["added", "changed", "nulls"]) {
     const button = document.getElementById(`diff_${name}`);
     const count = diff[name].length;
-    button.textContent = `${name[0].toUpperCase()}${name.slice(1)} (${count})`;
+    button.textContent = `${name === "nulls" ? "Null_items" : name[0].toUpperCase() + name.slice(1)} (${count})`;
     button.setAttribute("aria-pressed", name === kind);
   }
 }
@@ -226,7 +255,12 @@ function fillTable() {
         GK.toast(error.message, "error");
       }
     });
-    line.insertCell().append(button);
+    const open = document.createElement("a");
+    open.className = "btn-sm";
+    open.href = `search.html?archive=${encodeURIComponent(entry.file)}`;
+    open.textContent = "Search";
+    open.setAttribute("aria-label", `Search the items in ${entry.label}`);
+    line.insertCell().append(open, " ", button);
     return line;
   });
   document.getElementById("archive_rows").replaceChildren(...rows);
@@ -251,7 +285,8 @@ document.getElementById("archive_swap").addEventListener("click", () => {
   [pickA.value, pickB.value] = [pickB.value, pickA.value];
 });
 search.addEventListener("input", () => { page = 0; renderDiff(); });
-for (const name of ["added", "changed", "removed"]) {
+filter.addEventListener("change", () => { page = 0; renderDiff(); });
+for (const name of ["added", "changed", "nulls"]) {
   document.getElementById(`diff_${name}`).addEventListener("click", () => { kind = name; page = 0; renderDiff(); });
 }
 new ResizeObserver(() => {

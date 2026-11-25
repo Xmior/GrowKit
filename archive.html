@@ -24,7 +24,8 @@
 <p id="archive_status" role="status"></p>
 <div id="diff_panel" hidden>
 <div class="tool-row search-tools"><input class="search" id="diff_search" type="search" placeholder="Search by name or ID..." aria-label="Search changes">
-<div class="edit-mode" role="group" aria-label="Show"><button type="button" class="btn-sm" data-kind="added" aria-pressed="true" id="diff_added">Added</button><button type="button" class="btn-sm" data-kind="changed" aria-pressed="false" id="diff_changed">Changed</button><button type="button" class="btn-sm" data-kind="removed" aria-pressed="false" id="diff_removed">Removed</button></div></div>
+<div class="edit-mode" role="group" aria-label="Show"><button type="button" class="btn-sm" data-kind="added" aria-pressed="true" id="diff_added">Added</button><button type="button" class="btn-sm" data-kind="changed" aria-pressed="false" id="diff_changed">Changed</button><button type="button" class="btn-sm" data-kind="nulls" aria-pressed="false" id="diff_nulls" title="Items that were a null_item in the older file and became a real item">Null_items</button></div>
+<label class="field diff-filter" id="diff_filter_wrap" hidden><span>Only items whose</span><select id="diff_filter"><option value="">Anything changed</option><option value="name">Name changed</option><option value="desc">Description changed</option><option value="rarity">Rarity changed</option><option value="texture">Texture changed</option><option value="seed">Seed colour changed</option></select></label></div>
 <div id="diff_list" class="item-list"></div>
 <div class="pager"><span id="diff_info"></span><nav class="page-nav" aria-label="Pages"><button id="diff_prev" class="btn-sm">Previous</button><button id="diff_next" class="btn-sm">Next</button></nav></div>
 </div>
@@ -42,6 +43,8 @@
 <script src="assets/js/rt-format.js"></script>
 <script src="assets/js/item-icons.js"></script>
 <script src="assets/js/items-codec.js"></script>
+<script src="assets/js/action-types.js"></script>
+<script src="assets/js/item-enums.js"></script>
 <script src="assets/js/archive.js"></script>
 </body>
 </html>

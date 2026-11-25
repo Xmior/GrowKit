@@ -521,12 +521,13 @@ a.game-btn[hidden] { display: none; }
 .diff-row { break-inside: avoid; margin-bottom: 4px; background: var(--well); border-left: 5px solid #888; border-radius: 4px; }
 .diff-added { border-left-color: #4caf50; }
 .diff-changed { border-left-color: #ffb300; }
-.diff-removed { border-left-color: #e53935; }
+.diff-nulls { border-left-color: #9c6ade; }
+.diff-filter { min-width: 200px; }
 .diff-head { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; }
 summary.diff-head { cursor: pointer; }
 .diff-table { width: 100%; margin: 0 0 6px; border-collapse: collapse; }
 .diff-table th, .diff-table td { padding: 4px 12px; text-align: left; overflow-wrap: anywhere; border-top: 1px solid rgb(255 255 255 / .15); }
-.diff-table td:first-of-type { opacity: .75; text-decoration: line-through; }
+.diff-table td:first-of-type { text-decoration: line-through; }
 .archive-table { width: 100%; border-collapse: collapse; }
 .archive-table th, .archive-table td { padding: 6px 10px; text-align: left; border-bottom: 1px solid rgb(255 255 255 / .15); }
 #diff_panel[hidden] { display: none; }
