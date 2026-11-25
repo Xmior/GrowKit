@@ -39,6 +39,7 @@ function decode(blob) {
 }
 
 async function fileBytes(entry) {
+  if (entry.local) return new Uint8Array(await entry.local.arrayBuffer());
   const response = await fetch(entry.path || `assets/data/archive/${entry.file}`);
   if (!response.ok) throw new Error(`${entry.name} was not found.`);
   const bytes = new Uint8Array(await response.arrayBuffer());
@@ -164,6 +165,12 @@ function fillTable() {
   const rows = versions.filter((entry) => entry.file).reverse().map((entry) => {
     const line = document.createElement("tr");
     for (const text of [entry.label, `v${entry.version}`, entry.items, GK.formatSize(entry.size)]) line.insertCell().textContent = text;
+    if (entry.credit) {
+      const credit = document.createElement("small");
+      credit.className = "archive-credit";
+      credit.textContent = entry.credit;
+      line.cells[0].append(credit);
+    }
     const button = document.createElement("button");
     button.type = "button";
     button.className = "btn-sm";
@@ -183,6 +190,20 @@ function fillTable() {
 }
 
 document.getElementById("archive_compare").addEventListener("click", compare);
+// A file of the user's own joins the pickers as one more version
+for (const [id, pick] of [["own_a", pickA], ["own_b", pickB]]) {
+  document.getElementById(id).addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    versions.push({ label: `Your file: ${file.name}`, name: file.name, local: file });
+    const index = versions.length - 1;
+    for (const p of [pickA, pickB]) p.prepend(new Option(versions[index].label, index));
+    pick.value = index;
+    event.target.value = "";
+    const other = pick === pickA ? pickB : pickA;
+    if (versions[other.value]?.local) compare();
+  });
+}
 document.getElementById("archive_swap").addEventListener("click", () => {
   [pickA.value, pickB.value] = [pickB.value, pickA.value];
 });

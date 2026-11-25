@@ -708,3 +708,10 @@ a.thanks-name:hover { text-decoration: underline; }
 .growquiz-play { margin-top: 6px; padding: 8px 22px; color: #000; background: #4dff9a; border: 2px solid #000; border-radius: 99px; font-weight: 700; text-shadow: none; box-shadow: 0 4px 0 #000; }
 .tool-card.has-preview { padding-top: 10px; }
 .tool-preview { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; margin-bottom: 8px; border: 2px solid #000; border-radius: 6px; }
+
+.archive-credit { display: block; opacity: .7; font-size: .8em; }
+.thanks-name a { color: inherit; }
+.thanks-everyone { text-align: center; margin-top: 1rem; opacity: .85; }
+.thanks-name a{text-decoration:none}.thanks-name a:hover{text-decoration:underline}
+.file-btn { cursor: pointer; display: inline-flex; align-items: center; }
+.archive-own { margin: .6rem 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }

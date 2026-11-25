@@ -13,12 +13,14 @@
 <header class="page-head"><h1>Items.dat Archive</h1><p id="archive_info">Loading...</p></header>
 <section class="box">
 <h2>Compare two versions</h2>
+<p class="studio-help">Pick two archived versions, or load two items.dat files of your own to see what changed between them.</p>
 <div class="archive-pick">
 <label class="field"><span>Older</span><select id="archive_a"></select></label>
 <button type="button" class="btn-sm" id="archive_swap" aria-label="Swap versions">⇄</button>
 <label class="field"><span>Newer</span><select id="archive_b"></select></label>
 <button type="button" class="btn-save" id="archive_compare">Compare</button>
 </div>
+<p class="archive-own">Or compare your own files: <label class="btn-sm file-btn">Older items.dat<input type="file" id="own_a" accept=".dat" hidden></label> <label class="btn-sm file-btn">Newer items.dat<input type="file" id="own_b" accept=".dat" hidden></label> <small>Your files stay in your browser.</small></p>
 <p id="archive_status" role="status"></p>
 <div id="diff_panel" hidden>
 <div class="tool-row search-tools"><input class="search" id="diff_search" type="search" placeholder="Search by name or ID..." aria-label="Search changes">
