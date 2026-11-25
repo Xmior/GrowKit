@@ -8,14 +8,19 @@ const FIELDS = [
   ["clothing_type", "Body part"], ["item_kind", "Visual effect"], ["collision_type", "Collision"], ["break_hits", "Hits to break"],
   ["drop_chance", "Healing time"], ["grow_time", "Grow time"], ["max_amount", "Stack size"], ["editable_type", "Item flags"],
   ["item_category", "Category flags"], ["ingredient1", "Recipe seed 1"], ["ingredient2", "Recipe seed 2"],
+  ["seed_color", "Seed colour"], ["seed_overlay_color", "Seed overlay colour"], ["seed_base", "Seed shape"],
+  ["seed_overlay", "Seed overlay"], ["tree_base", "Tree trunk"], ["tree_leaves", "Tree leaves"],
 ];
+// Colours come decoded as {a, r, g, b}; they are compared and shown as #RRGGBB
+const asHex = (value) => value && typeof value === "object"
+  ? `#${[value.r, value.g, value.b].map((n) => Number(n).toString(16).padStart(2, "0")).join("").toUpperCase()}`
+  : value;
 const LATEST = { label: "Latest (site)", name: "items.dat", path: "assets/data/items.dat" };
 const pickA = document.getElementById("archive_a");
 const pickB = document.getElementById("archive_b");
 const statusText = document.getElementById("archive_status");
 const list = document.getElementById("diff_list");
 const search = document.getElementById("diff_search");
-const seeds = document.getElementById("diff_seeds");
 const decoded = new Map();
 let versions = [];
 let latestById = new Map();
@@ -54,8 +59,8 @@ async function loadVersion(entry) {
 function changesOf(oldItem, newItem) {
   const out = [];
   for (const [key, label] of FIELDS) {
-    const before = oldItem[key];
-    const after = newItem[key];
+    const before = asHex(oldItem[key]);
+    const after = asHex(newItem[key]);
     if (before === undefined || after === undefined || before === after) continue;
     // Newer formats add fields that older files can only leave empty
     if (key === "str_version_22" && !before) continue;
@@ -68,22 +73,39 @@ function buildDiff(oldData, newData) {
   const oldById = new Map(oldData.items.map((item) => [item.item_id, item]));
   const newById = new Map(newData.items.map((item) => [item.item_id, item]));
   const result = { added: [], changed: [], removed: [] };
+  const isSeed = (item) => item.action_type === SEED_ACTION;
+  const changedById = new Map();
   for (const item of newData.items) {
+    if (isSeed(item)) continue;
     const previous = oldById.get(item.item_id);
     if (!previous) {
       result.added.push({ item });
     } else {
       const changes = changesOf(previous, item);
-      if (changes.length) result.changed.push({ item, changes });
+      const entry = { item, changes };
+      changedById.set(item.item_id, entry);
+      if (changes.length) result.changed.push(entry);
     }
   }
+  // A seed is the item one ID above its block; its changes are listed on the block
+  for (const seed of newData.items) {
+    const previous = oldById.get(seed.item_id);
+    const entry = changedById.get(seed.item_id - 1);
+    if (!isSeed(seed) || !previous || !entry) continue;
+    const changes = changesOf(previous, seed).filter((change) => change.label !== "Name");
+    if (!changes.length) continue;
+    entry.seed = { before: previous, after: seed };
+    entry.changes.push(...changes.map((change) => ({ ...change, label: `Seed: ${change.label}` })));
+    if (!result.changed.includes(entry)) result.changed.push(entry);
+  }
+  result.changed.sort((a, b) => a.item.item_id - b.item.item_id);
   for (const item of oldData.items) {
-    if (!newById.has(item.item_id)) result.removed.push({ item });
+    if (!isSeed(item) && !newById.has(item.item_id)) result.removed.push({ item });
   }
   return result;
 }
 
-function row({ item, changes }) {
+function row({ item, changes, seed }) {
   const wrap = document.createElement(changes ? "details" : "div");
   wrap.className = `diff-row diff-${kind}`;
   const head = document.createElement(changes ? "summary" : "div");
@@ -108,8 +130,30 @@ function row({ item, changes }) {
       label.scope = "row";
       label.textContent = change.label;
       line.append(label);
-      line.insertCell().textContent = change.before;
-      line.insertCell().textContent = change.after;
+      for (const value of [change.before, change.after]) {
+        const cell = line.insertCell();
+        if (/^#[0-9A-F]{6}$/.test(value)) {
+          const swatch = document.createElement("span");
+          swatch.className = "diff-swatch";
+          swatch.style.background = value;
+          cell.append(swatch);
+        }
+        cell.append(value);
+      }
+    }
+    if (seed) {
+      // Old and new seed drawn from their own colours
+      const line = table.insertRow();
+      const label = document.createElement("th");
+      label.scope = "row";
+      label.textContent = "Seed";
+      line.append(label);
+      for (const version of [seed.before, seed.after]) {
+        const canvas = document.createElement("canvas");
+        canvas.className = "item-icon";
+        ItemIcons.draw(canvas, version);
+        line.insertCell().append(canvas);
+      }
     }
     wrap.append(table);
   }
@@ -119,7 +163,6 @@ function row({ item, changes }) {
 function renderDiff() {
   const query = search.value.trim().toLowerCase();
   const rows = diff[kind].filter(({ item }) => {
-    if (!seeds.checked && item.action_type === SEED_ACTION) return false;
     return !query || String(item.item_id) === query || String(item.name).toLowerCase().includes(query);
   });
   // Wide screens show the next rows beside these instead of on another page
@@ -134,7 +177,7 @@ function renderDiff() {
   document.getElementById("diff_next").disabled = page >= pages - 1;
   for (const name of ["added", "changed", "removed"]) {
     const button = document.getElementById(`diff_${name}`);
-    const count = diff[name].filter(({ item }) => seeds.checked || item.action_type !== SEED_ACTION).length;
+    const count = diff[name].length;
     button.textContent = `${name[0].toUpperCase()}${name.slice(1)} (${count})`;
     button.setAttribute("aria-pressed", name === kind);
   }
@@ -208,7 +251,6 @@ document.getElementById("archive_swap").addEventListener("click", () => {
   [pickA.value, pickB.value] = [pickB.value, pickA.value];
 });
 search.addEventListener("input", () => { page = 0; renderDiff(); });
-seeds.addEventListener("change", () => { page = 0; renderDiff(); });
 for (const name of ["added", "changed", "removed"]) {
   document.getElementById(`diff_${name}`).addEventListener("click", () => { kind = name; page = 0; renderDiff(); });
 }

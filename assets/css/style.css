@@ -715,3 +715,4 @@ a.thanks-name:hover { text-decoration: underline; }
 .thanks-name a{text-decoration:none}.thanks-name a:hover{text-decoration:underline}
 .file-btn { cursor: pointer; display: inline-flex; align-items: center; }
 .archive-own { margin: .6rem 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.diff-swatch { display: inline-block; width: .9em; height: .9em; margin-right: .35em; vertical-align: -.1em; border: 1px solid #0006; border-radius: 3px; }
