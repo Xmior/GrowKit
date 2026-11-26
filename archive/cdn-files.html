@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Files Archive · GrowKit</title>
+<meta name="description" content="Every version of every Growtopia CDN file, previewed straight from the CDN.">
+<link rel="icon" type="image/png" href="../assets/img/favicon_hd.png">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<main id="main" class="wrap wrap-wide page archive-page">
+<header class="page-head"><h1>Files Archive</h1><p id="files_info">Loading...</p></header>
+<div class="wiki-layout cdn-layout">
+<nav class="box wiki-nav cdn-nav cdn-search-nav" aria-label="Files">
+<input class="search" id="file_search" type="search" placeholder="Search files..." aria-label="Search files">
+<select id="file_folder" aria-label="Folder"><option value="">All folders</option></select>
+<label class="check check-left"><input type="checkbox" id="only_changed"> <span>Only files that changed</span></label>
+<p class="cdn-nav-title" id="file_count"></p>
+<ul id="file_list" class="cdn-results"></ul>
+</nav>
+<div class="cdn-main">
+<article class="version-card cdn-card" id="file_card"><p>Pick a file on the left.</p></article>
+<article class="version-card cdn-card" id="viewer" hidden></article>
+</div>
+</div>
+</main>
+<script src="../assets/js/weathers.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/clouds.js"></script>
+<script src="../assets/vendor/pako.min.js"></script>
+<script src="../assets/js/rt-format.js"></script>
+<script src="../assets/js/cdn-common.js"></script>
+<script src="../assets/js/cdn-files.js"></script>
+</body>
+</html>
